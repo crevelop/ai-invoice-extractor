@@ -1,0 +1,51 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Menaje Industrial Levante, S.A.",
+      "vendor_tax_id": "ESA46228901",
+      "invoice_number": "2026/00113",
+      "issue_date": "2026-04-25",
+      "due_date": "2026-05-10",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Cafetera italiana 6 tazas",
+          "quantity": "24",
+          "unit_price": "63.89",
+          "total": "1533.36"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm",
+          "quantity": "4",
+          "unit_price": "90.28",
+          "total": "361.12"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm",
+          "quantity": "4",
+          "unit_price": "73.85",
+          "total": "295.40"
+        },
+        {
+          "description": "Batería de cocina 8 piezas",
+          "quantity": "4",
+          "unit_price": "56.58",
+          "total": "226.32"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.)",
+          "quantity": "6",
+          "unit_price": "80.31",
+          "total": "481.86"
+        }
+      ],
+      "subtotal": "2898.06",
+      "tax_rate": "10",
+      "tax_amount": "289.81",
+      "total": "3187.87",
+      "reverse_charge": false
+    }
+  ]
+}

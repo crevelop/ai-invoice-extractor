@@ -1,0 +1,39 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Louças do Atlântico, Lda.",
+      "vendor_tax_id": "PT509884217",
+      "invoice_number": "FT 2026/166",
+      "issue_date": "2026-03-27",
+      "due_date": "2026-05-11",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Travessa de forno em grés",
+          "quantity": "48",
+          "unit_price": "88.11",
+          "total": "4229.28"
+        },
+        {
+          "description": "Frigideira cerâmica 28 cm",
+          "quantity": "10",
+          "unit_price": "22.07",
+          "total": "220.70"
+        },
+        {
+          "description": "Jarro de vidro 1,5 L",
+          "quantity": "10",
+          "unit_price": "28.25",
+          "total": "282.50"
+        }
+      ],
+      "subtotal": "4732.48",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "4732.48",
+      "reverse_charge": true
+    }
+  ]
+}

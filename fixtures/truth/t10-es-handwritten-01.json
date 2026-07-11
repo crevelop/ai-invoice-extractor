@@ -1,0 +1,63 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Ferretería y Menaje Soler, S.C.P.",
+      "vendor_tax_id": "ESJ08773241",
+      "invoice_number": "470/2026",
+      "issue_date": "2026-01-14",
+      "due_date": "2026-02-13",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.)",
+          "quantity": "10",
+          "unit_price": "33.67",
+          "total": "336.70"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "24",
+          "unit_price": "9.25",
+          "total": "222.00"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm",
+          "quantity": "10",
+          "unit_price": "53.13",
+          "total": "531.30"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm",
+          "quantity": "10",
+          "unit_price": "67.67",
+          "total": "676.70"
+        },
+        {
+          "description": "Molinillo de pimienta acero",
+          "quantity": "1",
+          "unit_price": "20.14",
+          "total": "20.14"
+        },
+        {
+          "description": "Escurridor plegable silicona",
+          "quantity": "1",
+          "unit_price": "73.37",
+          "total": "73.37"
+        },
+        {
+          "description": "Tabla de corte bambú 40×30",
+          "quantity": "12",
+          "unit_price": "48.74",
+          "total": "584.88"
+        }
+      ],
+      "subtotal": "2445.09",
+      "tax_rate": "21",
+      "tax_amount": "513.47",
+      "total": "2958.56",
+      "reverse_charge": false
+    }
+  ]
+}

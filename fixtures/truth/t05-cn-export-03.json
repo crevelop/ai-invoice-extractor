@@ -1,0 +1,63 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Guangzhou Brightware Housewares Co., Ltd.",
+      "vendor_tax_id": "91440101MA9W2XK37L",
+      "invoice_number": "GBH-20260298",
+      "issue_date": "2026-01-19",
+      "due_date": "2026-03-20",
+      "currency": "USD",
+      "line_items": [
+        {
+          "description": "Glass food storage containers (8 pcs)",
+          "quantity": "1",
+          "unit_price": "24.75",
+          "total": "24.75"
+        },
+        {
+          "description": "Silicone utensil set (10 pcs)",
+          "quantity": "12",
+          "unit_price": "78.48",
+          "total": "941.76"
+        },
+        {
+          "description": "Stackable spice jars (12 pcs)",
+          "quantity": "24",
+          "unit_price": "39.17",
+          "total": "940.08"
+        },
+        {
+          "description": "Double-wall glass tumblers (6 pcs)",
+          "quantity": "10",
+          "unit_price": "82.27",
+          "total": "822.70"
+        },
+        {
+          "description": "Non-stick frying pan 28 cm",
+          "quantity": "6",
+          "unit_price": "23.61",
+          "total": "141.66"
+        },
+        {
+          "description": "Cast iron dutch oven 4.7 L",
+          "quantity": "2",
+          "unit_price": "85.96",
+          "total": "171.92"
+        },
+        {
+          "description": "Stainless steel mixing bowl set (5 pcs)",
+          "quantity": "24",
+          "unit_price": "14.03",
+          "total": "336.72"
+        }
+      ],
+      "subtotal": "3379.59",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "3379.59",
+      "reverse_charge": false
+    }
+  ]
+}

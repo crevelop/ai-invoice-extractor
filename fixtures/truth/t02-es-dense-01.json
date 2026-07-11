@@ -1,0 +1,63 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Menaje Industrial Levante, S.A.",
+      "vendor_tax_id": "ESA46228901",
+      "invoice_number": "2026/00110",
+      "issue_date": "2026-06-24",
+      "due_date": "2026-07-09",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Olla a presión 6 L",
+          "quantity": "4",
+          "unit_price": "35.54",
+          "total": "142.16"
+        },
+        {
+          "description": "Cafetera italiana 6 tazas",
+          "quantity": "12",
+          "unit_price": "70.98",
+          "total": "851.76"
+        },
+        {
+          "description": "Escurridor plegable silicona",
+          "quantity": "12",
+          "unit_price": "63.05",
+          "total": "756.60"
+        },
+        {
+          "description": "Molinillo de pimienta acero",
+          "quantity": "10",
+          "unit_price": "65.37",
+          "total": "653.70"
+        },
+        {
+          "description": "Batería de cocina 8 piezas",
+          "quantity": "48",
+          "unit_price": "24.60",
+          "total": "1180.80"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm",
+          "quantity": "4",
+          "unit_price": "63.13",
+          "total": "252.52"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.)",
+          "quantity": "48",
+          "unit_price": "36.47",
+          "total": "1750.56"
+        }
+      ],
+      "subtotal": "5588.10",
+      "tax_rate": "21",
+      "tax_amount": "1173.50",
+      "total": "6761.60",
+      "reverse_charge": false
+    }
+  ]
+}

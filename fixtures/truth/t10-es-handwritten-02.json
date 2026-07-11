@@ -1,0 +1,63 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Ferretería y Menaje Soler, S.C.P.",
+      "vendor_tax_id": "ESJ08773241",
+      "invoice_number": "478/2026",
+      "issue_date": "2026-02-26",
+      "due_date": "2026-04-12",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Vajilla porcelana 18 piezas",
+          "quantity": "12",
+          "unit_price": "36.22",
+          "total": "434.64"
+        },
+        {
+          "description": "Molinillo de pimienta acero",
+          "quantity": "4",
+          "unit_price": "87.87",
+          "total": "351.48"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "6",
+          "unit_price": "70.97",
+          "total": "425.82"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm",
+          "quantity": "2",
+          "unit_price": "6.66",
+          "total": "13.32"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm",
+          "quantity": "4",
+          "unit_price": "32.52",
+          "total": "130.08"
+        },
+        {
+          "description": "Olla a presión 6 L",
+          "quantity": "24",
+          "unit_price": "13.87",
+          "total": "332.88"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.)",
+          "quantity": "24",
+          "unit_price": "87.26",
+          "total": "2094.24"
+        }
+      ],
+      "subtotal": "3782.46",
+      "tax_rate": "21",
+      "tax_amount": "794.32",
+      "total": "4576.78",
+      "reverse_charge": false
+    }
+  ]
+}

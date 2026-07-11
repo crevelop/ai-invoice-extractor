@@ -1,0 +1,45 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Menaje Industrial Levante, S.A.",
+      "vendor_tax_id": "ESA46228901",
+      "invoice_number": "2026/00124",
+      "issue_date": "2026-02-05",
+      "due_date": "2026-03-22",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.)",
+          "quantity": "4",
+          "unit_price": "80.17",
+          "total": "320.68"
+        },
+        {
+          "description": "Ensaladera cristal templado 26 cm",
+          "quantity": "6",
+          "unit_price": "54.91",
+          "total": "329.46"
+        },
+        {
+          "description": "Olla a presión 6 L",
+          "quantity": "1",
+          "unit_price": "78.79",
+          "total": "78.79"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "24",
+          "unit_price": "78.71",
+          "total": "1889.04"
+        }
+      ],
+      "subtotal": "2617.97",
+      "tax_rate": "10",
+      "tax_amount": "261.80",
+      "total": "2879.77",
+      "reverse_charge": false
+    }
+  ]
+}

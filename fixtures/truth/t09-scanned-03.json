@@ -1,0 +1,45 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Küchenprofi Rheinland GmbH",
+      "vendor_tax_id": "DE812940517",
+      "invoice_number": "RE-2026-0252",
+      "issue_date": "2026-02-20",
+      "due_date": "2026-04-06",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Schneidebrett Bambus groß",
+          "quantity": "1",
+          "unit_price": "22.49",
+          "total": "22.49"
+        },
+        {
+          "description": "Schüsselset Glas (4 Stück)",
+          "quantity": "10",
+          "unit_price": "26.66",
+          "total": "266.60"
+        },
+        {
+          "description": "Edelstahl-Kochtopf 5 L",
+          "quantity": "10",
+          "unit_price": "42.37",
+          "total": "423.70"
+        },
+        {
+          "description": "Küchenwaage digital 5 kg",
+          "quantity": "12",
+          "unit_price": "18.11",
+          "total": "217.32"
+        }
+      ],
+      "subtotal": "930.11",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "930.11",
+      "reverse_charge": true
+    }
+  ]
+}

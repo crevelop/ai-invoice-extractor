@@ -1,0 +1,57 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Cocinas del Ebro, S.L.",
+      "vendor_tax_id": "ESB50823176",
+      "invoice_number": "F-2026-0071",
+      "issue_date": "2026-02-18",
+      "due_date": "2026-04-04",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Olla a presión 6 L",
+          "quantity": "1",
+          "unit_price": "29.64",
+          "total": "29.64"
+        },
+        {
+          "description": "Molinillo de pimienta acero",
+          "quantity": "12",
+          "unit_price": "56.74",
+          "total": "680.88"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm",
+          "quantity": "2",
+          "unit_price": "6.84",
+          "total": "13.68"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas",
+          "quantity": "12",
+          "unit_price": "65.51",
+          "total": "786.12"
+        },
+        {
+          "description": "Escurridor plegable silicona",
+          "quantity": "12",
+          "unit_price": "15.64",
+          "total": "187.68"
+        },
+        {
+          "description": "Cafetera italiana 6 tazas",
+          "quantity": "24",
+          "unit_price": "89.44",
+          "total": "2146.56"
+        }
+      ],
+      "subtotal": "3844.56",
+      "tax_rate": "21",
+      "tax_amount": "807.36",
+      "total": "4651.92",
+      "reverse_charge": false
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Louças do Atlântico, Lda.",
+      "vendor_tax_id": "PT509884217",
+      "invoice_number": "FT 2026/174",
+      "issue_date": "2026-01-07",
+      "due_date": "2026-02-21",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Formas de silicone (6 un.)",
+          "quantity": "4",
+          "unit_price": "27.10",
+          "total": "108.40"
+        },
+        {
+          "description": "Jarro de vidro 1,5 L",
+          "quantity": "48",
+          "unit_price": "7.24",
+          "total": "347.52"
+        },
+        {
+          "description": "Frigideira cerâmica 28 cm",
+          "quantity": "24",
+          "unit_price": "54.68",
+          "total": "1312.32"
+        },
+        {
+          "description": "Panela inox fundo triplo 4 L",
+          "quantity": "48",
+          "unit_price": "29.17",
+          "total": "1400.16"
+        }
+      ],
+      "subtotal": "3168.40",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "3168.40",
+      "reverse_charge": true
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Louças do Atlântico, Lda.",
+      "vendor_tax_id": "PT509884217",
+      "invoice_number": "FT 2026/172",
+      "issue_date": "2026-02-19",
+      "due_date": "2026-03-21",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Panela inox fundo triplo 4 L",
+          "quantity": "12",
+          "unit_price": "3.34",
+          "total": "40.08"
+        },
+        {
+          "description": "Jarro de vidro 1,5 L",
+          "quantity": "48",
+          "unit_price": "27.12",
+          "total": "1301.76"
+        },
+        {
+          "description": "Formas de silicone (6 un.)",
+          "quantity": "10",
+          "unit_price": "27.89",
+          "total": "278.90"
+        },
+        {
+          "description": "Tábua de corte em faia",
+          "quantity": "12",
+          "unit_price": "72.64",
+          "total": "871.68"
+        }
+      ],
+      "subtotal": "2492.42",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "2492.42",
+      "reverse_charge": true
+    }
+  ]
+}

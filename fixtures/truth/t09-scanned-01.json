@@ -1,0 +1,57 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Cocinas del Ebro, S.L.",
+      "vendor_tax_id": "ESB50823176",
+      "invoice_number": "F-2026-0091",
+      "issue_date": "2026-02-21",
+      "due_date": "2026-03-08",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Olla a presión 6 L",
+          "quantity": "12",
+          "unit_price": "85.63",
+          "total": "1027.56"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "1",
+          "unit_price": "69.46",
+          "total": "69.46"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas",
+          "quantity": "6",
+          "unit_price": "63.89",
+          "total": "383.34"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm",
+          "quantity": "12",
+          "unit_price": "94.58",
+          "total": "1134.96"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.)",
+          "quantity": "4",
+          "unit_price": "40.00",
+          "total": "160.00"
+        },
+        {
+          "description": "Ensaladera cristal templado 26 cm",
+          "quantity": "1",
+          "unit_price": "72.91",
+          "total": "72.91"
+        }
+      ],
+      "subtotal": "2848.23",
+      "tax_rate": "21",
+      "tax_amount": "598.13",
+      "total": "3446.36",
+      "reverse_charge": false
+    }
+  ]
+}

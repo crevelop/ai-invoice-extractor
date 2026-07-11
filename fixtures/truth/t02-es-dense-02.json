@@ -1,0 +1,57 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Menaje Industrial Levante, S.A.",
+      "vendor_tax_id": "ESA46228901",
+      "invoice_number": "2026/00111",
+      "issue_date": "2026-06-23",
+      "due_date": "2026-08-07",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Sartén antiadherente 24 cm",
+          "quantity": "24",
+          "unit_price": "11.03",
+          "total": "264.72"
+        },
+        {
+          "description": "Ensaladera cristal templado 26 cm",
+          "quantity": "1",
+          "unit_price": "21.68",
+          "total": "21.68"
+        },
+        {
+          "description": "Olla a presión 6 L",
+          "quantity": "10",
+          "unit_price": "90.70",
+          "total": "907.00"
+        },
+        {
+          "description": "Molinillo de pimienta acero",
+          "quantity": "4",
+          "unit_price": "94.10",
+          "total": "376.40"
+        },
+        {
+          "description": "Tabla de corte bambú 40×30",
+          "quantity": "48",
+          "unit_price": "9.70",
+          "total": "465.60"
+        },
+        {
+          "description": "Escurridor plegable silicona",
+          "quantity": "1",
+          "unit_price": "10.64",
+          "total": "10.64"
+        }
+      ],
+      "subtotal": "2046.04",
+      "tax_rate": "21",
+      "tax_amount": "429.67",
+      "total": "2475.71",
+      "reverse_charge": false
+    }
+  ]
+}

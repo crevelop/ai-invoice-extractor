@@ -1,0 +1,369 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Distribuciones Meridional, S.A.",
+      "vendor_tax_id": "ESA28455301",
+      "invoice_number": "FA2026-00420",
+      "issue_date": "2026-02-13",
+      "due_date": "2026-03-30",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Sartén antiadherente 24 cm — ref. 1000",
+          "quantity": "12",
+          "unit_price": "86.34",
+          "total": "1036.08"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L — ref. 1001",
+          "quantity": "1",
+          "unit_price": "43.17",
+          "total": "43.17"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.) — ref. 1002",
+          "quantity": "6",
+          "unit_price": "13.43",
+          "total": "80.58"
+        },
+        {
+          "description": "Tabla de corte bambú 40×30 — ref. 1003",
+          "quantity": "4",
+          "unit_price": "13.30",
+          "total": "53.20"
+        },
+        {
+          "description": "Olla a presión 6 L — ref. 1004",
+          "quantity": "1",
+          "unit_price": "45.52",
+          "total": "45.52"
+        },
+        {
+          "description": "Escurridor plegable silicona — ref. 1005",
+          "quantity": "12",
+          "unit_price": "23.05",
+          "total": "276.60"
+        },
+        {
+          "description": "Batería de cocina 8 piezas — ref. 1006",
+          "quantity": "12",
+          "unit_price": "12.19",
+          "total": "146.28"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm — ref. 1007",
+          "quantity": "6",
+          "unit_price": "11.70",
+          "total": "70.20"
+        },
+        {
+          "description": "Molinillo de pimienta acero — ref. 1008",
+          "quantity": "10",
+          "unit_price": "47.63",
+          "total": "476.30"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas — ref. 1009",
+          "quantity": "4",
+          "unit_price": "78.61",
+          "total": "314.44"
+        },
+        {
+          "description": "Cafetera italiana 6 tazas — ref. 1010",
+          "quantity": "10",
+          "unit_price": "39.49",
+          "total": "394.90"
+        },
+        {
+          "description": "Ensaladera cristal templado 26 cm — ref. 1011",
+          "quantity": "12",
+          "unit_price": "81.39",
+          "total": "976.68"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm — ref. 1012",
+          "quantity": "1",
+          "unit_price": "8.20",
+          "total": "8.20"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L — ref. 1013",
+          "quantity": "1",
+          "unit_price": "76.58",
+          "total": "76.58"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.) — ref. 1014",
+          "quantity": "24",
+          "unit_price": "31.41",
+          "total": "753.84"
+        },
+        {
+          "description": "Tabla de corte bambú 40×30 — ref. 1015",
+          "quantity": "2",
+          "unit_price": "12.63",
+          "total": "25.26"
+        },
+        {
+          "description": "Olla a presión 6 L — ref. 1016",
+          "quantity": "10",
+          "unit_price": "4.28",
+          "total": "42.80"
+        },
+        {
+          "description": "Escurridor plegable silicona — ref. 1017",
+          "quantity": "6",
+          "unit_price": "22.63",
+          "total": "135.78"
+        },
+        {
+          "description": "Batería de cocina 8 piezas — ref. 1018",
+          "quantity": "12",
+          "unit_price": "16.26",
+          "total": "195.12"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm — ref. 1019",
+          "quantity": "12",
+          "unit_price": "90.88",
+          "total": "1090.56"
+        },
+        {
+          "description": "Molinillo de pimienta acero — ref. 1020",
+          "quantity": "2",
+          "unit_price": "20.56",
+          "total": "41.12"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas — ref. 1021",
+          "quantity": "24",
+          "unit_price": "5.78",
+          "total": "138.72"
+        },
+        {
+          "description": "Cafetera italiana 6 tazas — ref. 1022",
+          "quantity": "2",
+          "unit_price": "48.37",
+          "total": "96.74"
+        },
+        {
+          "description": "Ensaladera cristal templado 26 cm — ref. 1023",
+          "quantity": "48",
+          "unit_price": "66.36",
+          "total": "3185.28"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm — ref. 1024",
+          "quantity": "24",
+          "unit_price": "17.54",
+          "total": "420.96"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L — ref. 1025",
+          "quantity": "48",
+          "unit_price": "12.69",
+          "total": "609.12"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.) — ref. 1026",
+          "quantity": "12",
+          "unit_price": "60.51",
+          "total": "726.12"
+        },
+        {
+          "description": "Tabla de corte bambú 40×30 — ref. 1027",
+          "quantity": "1",
+          "unit_price": "68.38",
+          "total": "68.38"
+        },
+        {
+          "description": "Olla a presión 6 L — ref. 1028",
+          "quantity": "24",
+          "unit_price": "70.19",
+          "total": "1684.56"
+        },
+        {
+          "description": "Escurridor plegable silicona — ref. 1029",
+          "quantity": "4",
+          "unit_price": "61.46",
+          "total": "245.84"
+        },
+        {
+          "description": "Batería de cocina 8 piezas — ref. 1030",
+          "quantity": "1",
+          "unit_price": "70.33",
+          "total": "70.33"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm — ref. 1031",
+          "quantity": "48",
+          "unit_price": "46.97",
+          "total": "2254.56"
+        },
+        {
+          "description": "Molinillo de pimienta acero — ref. 1032",
+          "quantity": "2",
+          "unit_price": "24.44",
+          "total": "48.88"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas — ref. 1033",
+          "quantity": "12",
+          "unit_price": "76.40",
+          "total": "916.80"
+        },
+        {
+          "description": "Cafetera italiana 6 tazas — ref. 1034",
+          "quantity": "48",
+          "unit_price": "82.98",
+          "total": "3983.04"
+        },
+        {
+          "description": "Ensaladera cristal templado 26 cm — ref. 1035",
+          "quantity": "12",
+          "unit_price": "27.41",
+          "total": "328.92"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm — ref. 1036",
+          "quantity": "24",
+          "unit_price": "33.99",
+          "total": "815.76"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L — ref. 1037",
+          "quantity": "2",
+          "unit_price": "31.83",
+          "total": "63.66"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.) — ref. 1038",
+          "quantity": "12",
+          "unit_price": "74.53",
+          "total": "894.36"
+        },
+        {
+          "description": "Tabla de corte bambú 40×30 — ref. 1039",
+          "quantity": "1",
+          "unit_price": "35.25",
+          "total": "35.25"
+        },
+        {
+          "description": "Olla a presión 6 L — ref. 1040",
+          "quantity": "1",
+          "unit_price": "77.16",
+          "total": "77.16"
+        },
+        {
+          "description": "Escurridor plegable silicona — ref. 1041",
+          "quantity": "1",
+          "unit_price": "88.21",
+          "total": "88.21"
+        },
+        {
+          "description": "Batería de cocina 8 piezas — ref. 1042",
+          "quantity": "48",
+          "unit_price": "37.43",
+          "total": "1796.64"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm — ref. 1043",
+          "quantity": "24",
+          "unit_price": "53.30",
+          "total": "1279.20"
+        },
+        {
+          "description": "Molinillo de pimienta acero — ref. 1044",
+          "quantity": "6",
+          "unit_price": "29.96",
+          "total": "179.76"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas — ref. 1045",
+          "quantity": "24",
+          "unit_price": "66.26",
+          "total": "1590.24"
+        },
+        {
+          "description": "Cafetera italiana 6 tazas — ref. 1046",
+          "quantity": "48",
+          "unit_price": "77.83",
+          "total": "3735.84"
+        },
+        {
+          "description": "Ensaladera cristal templado 26 cm — ref. 1047",
+          "quantity": "2",
+          "unit_price": "65.94",
+          "total": "131.88"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm — ref. 1048",
+          "quantity": "4",
+          "unit_price": "57.87",
+          "total": "231.48"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L — ref. 1049",
+          "quantity": "6",
+          "unit_price": "6.91",
+          "total": "41.46"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.) — ref. 1050",
+          "quantity": "1",
+          "unit_price": "67.94",
+          "total": "67.94"
+        },
+        {
+          "description": "Tabla de corte bambú 40×30 — ref. 1051",
+          "quantity": "10",
+          "unit_price": "18.79",
+          "total": "187.90"
+        },
+        {
+          "description": "Olla a presión 6 L — ref. 1052",
+          "quantity": "6",
+          "unit_price": "65.91",
+          "total": "395.46"
+        },
+        {
+          "description": "Escurridor plegable silicona — ref. 1053",
+          "quantity": "12",
+          "unit_price": "65.10",
+          "total": "781.20"
+        },
+        {
+          "description": "Batería de cocina 8 piezas — ref. 1054",
+          "quantity": "2",
+          "unit_price": "57.33",
+          "total": "114.66"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm — ref. 1055",
+          "quantity": "24",
+          "unit_price": "19.00",
+          "total": "456.00"
+        },
+        {
+          "description": "Molinillo de pimienta acero — ref. 1056",
+          "quantity": "10",
+          "unit_price": "45.82",
+          "total": "458.20"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas — ref. 1057",
+          "quantity": "24",
+          "unit_price": "22.97",
+          "total": "551.28"
+        }
+      ],
+      "subtotal": "35035.00",
+      "tax_rate": "21",
+      "tax_amount": "7357.35",
+      "total": "42392.35",
+      "reverse_charge": false
+    }
+  ]
+}

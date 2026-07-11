@@ -1,0 +1,63 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Menaje Industrial Levante, S.A.",
+      "vendor_tax_id": "ESA46228901",
+      "invoice_number": "2026/00121",
+      "issue_date": "2026-05-15",
+      "due_date": "2026-07-14",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.)",
+          "quantity": "6",
+          "unit_price": "56.57",
+          "total": "339.42"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas",
+          "quantity": "4",
+          "unit_price": "39.61",
+          "total": "158.44"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm",
+          "quantity": "2",
+          "unit_price": "54.87",
+          "total": "109.74"
+        },
+        {
+          "description": "Batería de cocina 8 piezas",
+          "quantity": "2",
+          "unit_price": "11.55",
+          "total": "23.10"
+        },
+        {
+          "description": "Molinillo de pimienta acero",
+          "quantity": "2",
+          "unit_price": "71.38",
+          "total": "142.76"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "4",
+          "unit_price": "32.73",
+          "total": "130.92"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm",
+          "quantity": "1",
+          "unit_price": "72.63",
+          "total": "72.63"
+        }
+      ],
+      "subtotal": "977.01",
+      "tax_rate": "21",
+      "tax_amount": "205.17",
+      "total": "1182.18",
+      "reverse_charge": false
+    }
+  ]
+}

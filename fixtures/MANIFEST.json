@@ -1,0 +1,533 @@
+{
+  "seed": 20260711,
+  "generated_by": "fixtures/generate.py",
+  "counts": {
+    "invoice_docs": 39,
+    "reject_docs": 4,
+    "total_docs": 43,
+    "invoice_records": 41
+  },
+  "by_template": {
+    "r1_statement": 2,
+    "r2_quote": 2,
+    "t01_es_clean": 6,
+    "t02_es_dense": 5,
+    "t03_pt_reverse": 4,
+    "t04_de_reverse": 4,
+    "t05_cn_export": 5,
+    "t06_en_minimal": 4,
+    "t07_es_multipage": 3,
+    "t08_multi_invoice": 2,
+    "t09_scanned": 4,
+    "t10_es_handwritten": 2
+  },
+  "docs": [
+    {
+      "file": "docs/invoices/t01-es-clean-01.pdf",
+      "template": "t01_es_clean",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals"
+      ],
+      "pages": 1,
+      "truth": "truth/t01-es-clean-01.json"
+    },
+    {
+      "file": "docs/invoices/t01-es-clean-02.pdf",
+      "template": "t01_es_clean",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals"
+      ],
+      "pages": 1,
+      "truth": "truth/t01-es-clean-02.json"
+    },
+    {
+      "file": "docs/invoices/t01-es-clean-03.pdf",
+      "template": "t01_es_clean",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals"
+      ],
+      "pages": 1,
+      "truth": "truth/t01-es-clean-03.json"
+    },
+    {
+      "file": "docs/invoices/t01-es-clean-04.pdf",
+      "template": "t01_es_clean",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals"
+      ],
+      "pages": 1,
+      "truth": "truth/t01-es-clean-04.json"
+    },
+    {
+      "file": "docs/invoices/t01-es-clean-05.pdf",
+      "template": "t01_es_clean",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals"
+      ],
+      "pages": 1,
+      "truth": "truth/t01-es-clean-05.json"
+    },
+    {
+      "file": "docs/invoices/t01-es-clean-06.pdf",
+      "template": "t01_es_clean",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals"
+      ],
+      "pages": 1,
+      "truth": "truth/t01-es-clean-06.json"
+    },
+    {
+      "file": "docs/invoices/t02-es-dense-01.pdf",
+      "template": "t02_es_dense",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "dense_layout"
+      ],
+      "pages": 1,
+      "truth": "truth/t02-es-dense-01.json"
+    },
+    {
+      "file": "docs/invoices/t02-es-dense-02.pdf",
+      "template": "t02_es_dense",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "dense_layout"
+      ],
+      "pages": 1,
+      "truth": "truth/t02-es-dense-02.json"
+    },
+    {
+      "file": "docs/invoices/t02-es-dense-03.pdf",
+      "template": "t02_es_dense",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "dense_layout"
+      ],
+      "pages": 1,
+      "truth": "truth/t02-es-dense-03.json"
+    },
+    {
+      "file": "docs/invoices/t02-es-dense-04.pdf",
+      "template": "t02_es_dense",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "dense_layout"
+      ],
+      "pages": 1,
+      "truth": "truth/t02-es-dense-04.json"
+    },
+    {
+      "file": "docs/invoices/t02-es-dense-05.pdf",
+      "template": "t02_es_dense",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "dense_layout"
+      ],
+      "pages": 1,
+      "truth": "truth/t02-es-dense-05.json"
+    },
+    {
+      "file": "docs/invoices/t03-pt-reverse-01.pdf",
+      "template": "t03_pt_reverse",
+      "tags": [
+        "pt",
+        "eur",
+        "eu_decimals",
+        "reverse_charge"
+      ],
+      "pages": 1,
+      "truth": "truth/t03-pt-reverse-01.json"
+    },
+    {
+      "file": "docs/invoices/t03-pt-reverse-02.pdf",
+      "template": "t03_pt_reverse",
+      "tags": [
+        "pt",
+        "eur",
+        "eu_decimals",
+        "reverse_charge"
+      ],
+      "pages": 1,
+      "truth": "truth/t03-pt-reverse-02.json"
+    },
+    {
+      "file": "docs/invoices/t03-pt-reverse-03.pdf",
+      "template": "t03_pt_reverse",
+      "tags": [
+        "pt",
+        "eur",
+        "eu_decimals",
+        "reverse_charge"
+      ],
+      "pages": 1,
+      "truth": "truth/t03-pt-reverse-03.json"
+    },
+    {
+      "file": "docs/invoices/t03-pt-reverse-04.pdf",
+      "template": "t03_pt_reverse",
+      "tags": [
+        "pt",
+        "eur",
+        "eu_decimals",
+        "reverse_charge"
+      ],
+      "pages": 1,
+      "truth": "truth/t03-pt-reverse-04.json"
+    },
+    {
+      "file": "docs/invoices/t04-de-reverse-01.pdf",
+      "template": "t04_de_reverse",
+      "tags": [
+        "de",
+        "eur",
+        "eu_decimals",
+        "reverse_charge"
+      ],
+      "pages": 1,
+      "truth": "truth/t04-de-reverse-01.json"
+    },
+    {
+      "file": "docs/invoices/t04-de-reverse-02.pdf",
+      "template": "t04_de_reverse",
+      "tags": [
+        "de",
+        "eur",
+        "eu_decimals",
+        "reverse_charge"
+      ],
+      "pages": 1,
+      "truth": "truth/t04-de-reverse-02.json"
+    },
+    {
+      "file": "docs/invoices/t04-de-reverse-03.pdf",
+      "template": "t04_de_reverse",
+      "tags": [
+        "de",
+        "eur",
+        "eu_decimals",
+        "reverse_charge"
+      ],
+      "pages": 1,
+      "truth": "truth/t04-de-reverse-03.json"
+    },
+    {
+      "file": "docs/invoices/t04-de-reverse-04.pdf",
+      "template": "t04_de_reverse",
+      "tags": [
+        "de",
+        "eur",
+        "eu_decimals",
+        "reverse_charge"
+      ],
+      "pages": 1,
+      "truth": "truth/t04-de-reverse-04.json"
+    },
+    {
+      "file": "docs/invoices/t05-cn-export-01.pdf",
+      "template": "t05_cn_export",
+      "tags": [
+        "en",
+        "us_decimals",
+        "non_eur"
+      ],
+      "pages": 1,
+      "truth": "truth/t05-cn-export-01.json"
+    },
+    {
+      "file": "docs/invoices/t05-cn-export-02.pdf",
+      "template": "t05_cn_export",
+      "tags": [
+        "en",
+        "us_decimals",
+        "non_eur"
+      ],
+      "pages": 1,
+      "truth": "truth/t05-cn-export-02.json"
+    },
+    {
+      "file": "docs/invoices/t05-cn-export-03.pdf",
+      "template": "t05_cn_export",
+      "tags": [
+        "en",
+        "us_decimals",
+        "non_eur"
+      ],
+      "pages": 1,
+      "truth": "truth/t05-cn-export-03.json"
+    },
+    {
+      "file": "docs/invoices/t05-cn-export-04.pdf",
+      "template": "t05_cn_export",
+      "tags": [
+        "en",
+        "us_decimals",
+        "non_eur"
+      ],
+      "pages": 1,
+      "truth": "truth/t05-cn-export-04.json"
+    },
+    {
+      "file": "docs/invoices/t05-cn-export-05.pdf",
+      "template": "t05_cn_export",
+      "tags": [
+        "en",
+        "us_decimals",
+        "non_eur"
+      ],
+      "pages": 1,
+      "truth": "truth/t05-cn-export-05.json"
+    },
+    {
+      "file": "docs/invoices/t06-en-minimal-01.pdf",
+      "template": "t06_en_minimal",
+      "tags": [
+        "en",
+        "eur",
+        "missing_fields"
+      ],
+      "pages": 1,
+      "truth": "truth/t06-en-minimal-01.json"
+    },
+    {
+      "file": "docs/invoices/t06-en-minimal-02.pdf",
+      "template": "t06_en_minimal",
+      "tags": [
+        "en",
+        "eur",
+        "missing_fields"
+      ],
+      "pages": 1,
+      "truth": "truth/t06-en-minimal-02.json"
+    },
+    {
+      "file": "docs/invoices/t06-en-minimal-03.pdf",
+      "template": "t06_en_minimal",
+      "tags": [
+        "en",
+        "eur",
+        "missing_fields"
+      ],
+      "pages": 1,
+      "truth": "truth/t06-en-minimal-03.json"
+    },
+    {
+      "file": "docs/invoices/t06-en-minimal-04.pdf",
+      "template": "t06_en_minimal",
+      "tags": [
+        "en",
+        "eur",
+        "missing_fields"
+      ],
+      "pages": 1,
+      "truth": "truth/t06-en-minimal-04.json"
+    },
+    {
+      "file": "docs/invoices/t07-es-multipage-01.pdf",
+      "template": "t07_es_multipage",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "multi_page"
+      ],
+      "pages": 3,
+      "truth": "truth/t07-es-multipage-01.json"
+    },
+    {
+      "file": "docs/invoices/t07-es-multipage-02.pdf",
+      "template": "t07_es_multipage",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "multi_page"
+      ],
+      "pages": 2,
+      "truth": "truth/t07-es-multipage-02.json"
+    },
+    {
+      "file": "docs/invoices/t07-es-multipage-03.pdf",
+      "template": "t07_es_multipage",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "multi_page"
+      ],
+      "pages": 3,
+      "truth": "truth/t07-es-multipage-03.json"
+    },
+    {
+      "file": "docs/invoices/t08-multi-invoice-01.pdf",
+      "template": "t08_multi_invoice",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "multi_invoice"
+      ],
+      "pages": 2,
+      "truth": "truth/t08-multi-invoice-01.json"
+    },
+    {
+      "file": "docs/invoices/t08-multi-invoice-02.pdf",
+      "template": "t08_multi_invoice",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "multi_invoice"
+      ],
+      "pages": 2,
+      "truth": "truth/t08-multi-invoice-02.json"
+    },
+    {
+      "file": "docs/invoices/t09-scanned-01.pdf",
+      "template": "t09_scanned",
+      "tags": [
+        "es",
+        "eu_decimals",
+        "eur",
+        "no_text_layer",
+        "rotated",
+        "scanned"
+      ],
+      "pages": 1,
+      "truth": "truth/t09-scanned-01.json"
+    },
+    {
+      "file": "docs/invoices/t09-scanned-02.pdf",
+      "template": "t09_scanned",
+      "tags": [
+        "es",
+        "eu_decimals",
+        "eur",
+        "no_text_layer",
+        "rotated",
+        "scanned"
+      ],
+      "pages": 1,
+      "truth": "truth/t09-scanned-02.json"
+    },
+    {
+      "file": "docs/invoices/t09-scanned-03.pdf",
+      "template": "t09_scanned",
+      "tags": [
+        "de",
+        "eu_decimals",
+        "eur",
+        "no_text_layer",
+        "reverse_charge",
+        "rotated",
+        "scanned"
+      ],
+      "pages": 1,
+      "truth": "truth/t09-scanned-03.json"
+    },
+    {
+      "file": "docs/invoices/t09-scanned-04.pdf",
+      "template": "t09_scanned",
+      "tags": [
+        "de",
+        "eu_decimals",
+        "eur",
+        "no_text_layer",
+        "reverse_charge",
+        "rotated",
+        "scanned"
+      ],
+      "pages": 1,
+      "truth": "truth/t09-scanned-04.json"
+    },
+    {
+      "file": "docs/invoices/t10-es-handwritten-01.pdf",
+      "template": "t10_es_handwritten",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "handwritten"
+      ],
+      "pages": 1,
+      "truth": "truth/t10-es-handwritten-01.json"
+    },
+    {
+      "file": "docs/invoices/t10-es-handwritten-02.pdf",
+      "template": "t10_es_handwritten",
+      "tags": [
+        "es",
+        "eur",
+        "eu_decimals",
+        "handwritten"
+      ],
+      "pages": 1,
+      "truth": "truth/t10-es-handwritten-02.json"
+    },
+    {
+      "file": "docs/reject/r1-statement-01.pdf",
+      "template": "r1_statement",
+      "tags": [
+        "es",
+        "reject",
+        "statement"
+      ],
+      "pages": 1,
+      "truth": "truth/r1-statement-01.json"
+    },
+    {
+      "file": "docs/reject/r1-statement-02.pdf",
+      "template": "r1_statement",
+      "tags": [
+        "es",
+        "reject",
+        "statement"
+      ],
+      "pages": 1,
+      "truth": "truth/r1-statement-02.json"
+    },
+    {
+      "file": "docs/reject/r2-quote-01.pdf",
+      "template": "r2_quote",
+      "tags": [
+        "es",
+        "reject",
+        "quote"
+      ],
+      "pages": 1,
+      "truth": "truth/r2-quote-01.json"
+    },
+    {
+      "file": "docs/reject/r2-quote-02.pdf",
+      "template": "r2_quote",
+      "tags": [
+        "es",
+        "reject",
+        "quote"
+      ],
+      "pages": 1,
+      "truth": "truth/r2-quote-02.json"
+    }
+  ]
+}

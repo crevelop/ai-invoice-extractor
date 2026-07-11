@@ -1,0 +1,45 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Brava Kitchen Supplies, S.L.",
+      "vendor_tax_id": "ESB67443210",
+      "invoice_number": "BKS-367",
+      "issue_date": "2026-04-24",
+      "due_date": null,
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Non-stick frying pan 28 cm",
+          "quantity": "4",
+          "unit_price": "79.79",
+          "total": "319.16"
+        },
+        {
+          "description": "Silicone utensil set (10 pcs)",
+          "quantity": "24",
+          "unit_price": "12.14",
+          "total": "291.36"
+        },
+        {
+          "description": "Double-wall glass tumblers (6 pcs)",
+          "quantity": "4",
+          "unit_price": "79.72",
+          "total": "318.88"
+        },
+        {
+          "description": "Glass food storage containers (8 pcs)",
+          "quantity": "48",
+          "unit_price": "82.71",
+          "total": "3970.08"
+        }
+      ],
+      "subtotal": "4899.48",
+      "tax_rate": "21",
+      "tax_amount": "1028.89",
+      "total": "5928.37",
+      "reverse_charge": false
+    }
+  ]
+}

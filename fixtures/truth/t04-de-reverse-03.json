@@ -1,0 +1,63 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Küchenprofi Rheinland GmbH",
+      "vendor_tax_id": "DE812940517",
+      "invoice_number": "RE-2026-0242",
+      "issue_date": "2026-06-26",
+      "due_date": "2026-07-11",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Auflaufform Keramik 34 cm",
+          "quantity": "4",
+          "unit_price": "13.57",
+          "total": "54.28"
+        },
+        {
+          "description": "Schneidebrett Bambus groß",
+          "quantity": "2",
+          "unit_price": "59.91",
+          "total": "119.82"
+        },
+        {
+          "description": "Küchenwaage digital 5 kg",
+          "quantity": "10",
+          "unit_price": "64.09",
+          "total": "640.90"
+        },
+        {
+          "description": "Messerblock Buche 7-teilig",
+          "quantity": "12",
+          "unit_price": "74.46",
+          "total": "893.52"
+        },
+        {
+          "description": "Edelstahl-Kochtopf 5 L",
+          "quantity": "4",
+          "unit_price": "64.18",
+          "total": "256.72"
+        },
+        {
+          "description": "Schüsselset Glas (4 Stück)",
+          "quantity": "2",
+          "unit_price": "34.20",
+          "total": "68.40"
+        },
+        {
+          "description": "Salatschleuder Edelstahl",
+          "quantity": "10",
+          "unit_price": "41.70",
+          "total": "417.00"
+        }
+      ],
+      "subtotal": "2450.64",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "2450.64",
+      "reverse_charge": true
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Cocinas del Ebro, S.L.",
+      "vendor_tax_id": "ESB50823176",
+      "invoice_number": "F-2026-0047",
+      "issue_date": "2026-05-04",
+      "due_date": "2026-07-03",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Ensaladera cristal templado 26 cm",
+          "quantity": "2",
+          "unit_price": "94.90",
+          "total": "189.80"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas",
+          "quantity": "1",
+          "unit_price": "31.80",
+          "total": "31.80"
+        },
+        {
+          "description": "Tabla de corte bambú 40×30",
+          "quantity": "1",
+          "unit_price": "50.60",
+          "total": "50.60"
+        },
+        {
+          "description": "Escurridor plegable silicona",
+          "quantity": "12",
+          "unit_price": "20.32",
+          "total": "243.84"
+        },
+        {
+          "description": "Batería de cocina 8 piezas",
+          "quantity": "2",
+          "unit_price": "70.89",
+          "total": "141.78"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "12",
+          "unit_price": "21.68",
+          "total": "260.16"
+        }
+      ],
+      "subtotal": "917.98",
+      "tax_rate": "21",
+      "tax_amount": "192.78",
+      "total": "1110.76",
+      "reverse_charge": false
+    }
+  ]
+}

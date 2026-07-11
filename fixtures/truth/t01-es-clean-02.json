@@ -1,0 +1,39 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Cocinas del Ebro, S.L.",
+      "vendor_tax_id": "ESB50823176",
+      "invoice_number": "F-2026-0048",
+      "issue_date": "2026-02-10",
+      "due_date": "2026-02-25",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "12",
+          "unit_price": "47.10",
+          "total": "565.20"
+        },
+        {
+          "description": "Batería de cocina 8 piezas",
+          "quantity": "4",
+          "unit_price": "67.65",
+          "total": "270.60"
+        },
+        {
+          "description": "Olla a presión 6 L",
+          "quantity": "48",
+          "unit_price": "74.24",
+          "total": "3563.52"
+        }
+      ],
+      "subtotal": "4399.32",
+      "tax_rate": "21",
+      "tax_amount": "923.86",
+      "total": "5323.18",
+      "reverse_charge": false
+    }
+  ]
+}

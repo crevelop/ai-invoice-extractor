@@ -1,0 +1,57 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Cocinas del Ebro, S.L.",
+      "vendor_tax_id": "ESB50823176",
+      "invoice_number": "F-2026-0093",
+      "issue_date": "2026-03-04",
+      "due_date": "2026-03-19",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Escurridor plegable silicona",
+          "quantity": "12",
+          "unit_price": "22.79",
+          "total": "273.48"
+        },
+        {
+          "description": "Batería de cocina 8 piezas",
+          "quantity": "48",
+          "unit_price": "34.80",
+          "total": "1670.40"
+        },
+        {
+          "description": "Sartén antiadherente 24 cm",
+          "quantity": "4",
+          "unit_price": "6.44",
+          "total": "25.76"
+        },
+        {
+          "description": "Molinillo de pimienta acero",
+          "quantity": "4",
+          "unit_price": "75.43",
+          "total": "301.72"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.)",
+          "quantity": "24",
+          "unit_price": "91.29",
+          "total": "2190.96"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "24",
+          "unit_price": "5.47",
+          "total": "131.28"
+        }
+      ],
+      "subtotal": "4593.60",
+      "tax_rate": "21",
+      "tax_amount": "964.66",
+      "total": "5558.26",
+      "reverse_charge": false
+    }
+  ]
+}

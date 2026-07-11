@@ -1,0 +1,51 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Küchenprofi Rheinland GmbH",
+      "vendor_tax_id": "DE812940517",
+      "invoice_number": "RE-2026-0236",
+      "issue_date": "2026-04-14",
+      "due_date": "2026-05-29",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Gusseisen-Bratpfanne 26 cm",
+          "quantity": "4",
+          "unit_price": "48.45",
+          "total": "193.80"
+        },
+        {
+          "description": "Edelstahl-Kochtopf 5 L",
+          "quantity": "24",
+          "unit_price": "19.31",
+          "total": "463.44"
+        },
+        {
+          "description": "Schneidebrett Bambus groß",
+          "quantity": "1",
+          "unit_price": "3.90",
+          "total": "3.90"
+        },
+        {
+          "description": "Auflaufform Keramik 34 cm",
+          "quantity": "10",
+          "unit_price": "40.83",
+          "total": "408.30"
+        },
+        {
+          "description": "Schüsselset Glas (4 Stück)",
+          "quantity": "6",
+          "unit_price": "53.09",
+          "total": "318.54"
+        }
+      ],
+      "subtotal": "1387.98",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "1387.98",
+      "reverse_charge": true
+    }
+  ]
+}

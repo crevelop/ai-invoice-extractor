@@ -1,0 +1,51 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Guangzhou Brightware Housewares Co., Ltd.",
+      "vendor_tax_id": "91440101MA9W2XK37L",
+      "invoice_number": "GBH-20260300",
+      "issue_date": "2026-05-05",
+      "due_date": "2026-06-19",
+      "currency": "CNY",
+      "line_items": [
+        {
+          "description": "Kitchen scale digital 5 kg",
+          "quantity": "4",
+          "unit_price": "28.28",
+          "total": "113.12"
+        },
+        {
+          "description": "Ceramic dinnerware set 16 pcs",
+          "quantity": "48",
+          "unit_price": "3.24",
+          "total": "155.52"
+        },
+        {
+          "description": "Stainless steel mixing bowl set (5 pcs)",
+          "quantity": "2",
+          "unit_price": "70.15",
+          "total": "140.30"
+        },
+        {
+          "description": "Stackable spice jars (12 pcs)",
+          "quantity": "4",
+          "unit_price": "57.00",
+          "total": "228.00"
+        },
+        {
+          "description": "Double-wall glass tumblers (6 pcs)",
+          "quantity": "12",
+          "unit_price": "11.60",
+          "total": "139.20"
+        }
+      ],
+      "subtotal": "776.14",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "776.14",
+      "reverse_charge": false
+    }
+  ]
+}

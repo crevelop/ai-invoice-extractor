@@ -1,0 +1,45 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Küchenprofi Rheinland GmbH",
+      "vendor_tax_id": "DE812940517",
+      "invoice_number": "RE-2026-0232",
+      "issue_date": "2026-02-04",
+      "due_date": "2026-04-05",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Küchenwaage digital 5 kg",
+          "quantity": "4",
+          "unit_price": "28.51",
+          "total": "114.04"
+        },
+        {
+          "description": "Schüsselset Glas (4 Stück)",
+          "quantity": "6",
+          "unit_price": "34.74",
+          "total": "208.44"
+        },
+        {
+          "description": "Messerblock Buche 7-teilig",
+          "quantity": "1",
+          "unit_price": "88.06",
+          "total": "88.06"
+        },
+        {
+          "description": "Gusseisen-Bratpfanne 26 cm",
+          "quantity": "6",
+          "unit_price": "28.38",
+          "total": "170.28"
+        }
+      ],
+      "subtotal": "580.82",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "580.82",
+      "reverse_charge": true
+    }
+  ]
+}

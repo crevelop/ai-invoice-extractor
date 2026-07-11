@@ -1,0 +1,45 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Brava Kitchen Supplies, S.L.",
+      "vendor_tax_id": "ESB67443210",
+      "invoice_number": "BKS-351",
+      "issue_date": "2026-06-27",
+      "due_date": null,
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Kitchen scale digital 5 kg",
+          "quantity": "10",
+          "unit_price": "32.65",
+          "total": "326.50"
+        },
+        {
+          "description": "Silicone utensil set (10 pcs)",
+          "quantity": "4",
+          "unit_price": "50.69",
+          "total": "202.76"
+        },
+        {
+          "description": "Double-wall glass tumblers (6 pcs)",
+          "quantity": "1",
+          "unit_price": "89.15",
+          "total": "89.15"
+        },
+        {
+          "description": "Ceramic dinnerware set 16 pcs",
+          "quantity": "12",
+          "unit_price": "33.70",
+          "total": "404.40"
+        }
+      ],
+      "subtotal": "1022.81",
+      "tax_rate": "21",
+      "tax_amount": "214.79",
+      "total": "1237.60",
+      "reverse_charge": false
+    }
+  ]
+}

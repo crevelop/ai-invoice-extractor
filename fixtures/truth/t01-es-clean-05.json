@@ -1,0 +1,39 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Cocinas del Ebro, S.L.",
+      "vendor_tax_id": "ESB50823176",
+      "invoice_number": "F-2026-0066",
+      "issue_date": "2026-01-27",
+      "due_date": "2026-03-13",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Tabla de corte bambú 40×30",
+          "quantity": "6",
+          "unit_price": "90.74",
+          "total": "544.44"
+        },
+        {
+          "description": "Batería de cocina 8 piezas",
+          "quantity": "6",
+          "unit_price": "51.25",
+          "total": "307.50"
+        },
+        {
+          "description": "Molinillo de pimienta acero",
+          "quantity": "4",
+          "unit_price": "40.95",
+          "total": "163.80"
+        }
+      ],
+      "subtotal": "1015.74",
+      "tax_rate": "21",
+      "tax_amount": "213.31",
+      "total": "1229.05",
+      "reverse_charge": false
+    }
+  ]
+}

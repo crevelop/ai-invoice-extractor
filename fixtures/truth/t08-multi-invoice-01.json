@@ -1,0 +1,114 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Cocinas del Ebro, S.L.",
+      "vendor_tax_id": "ESB50823176",
+      "invoice_number": "F-2026-0076",
+      "issue_date": "2026-03-19",
+      "due_date": "2026-04-18",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Cafetera italiana 6 tazas",
+          "quantity": "4",
+          "unit_price": "58.36",
+          "total": "233.44"
+        },
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "1",
+          "unit_price": "7.80",
+          "total": "7.80"
+        },
+        {
+          "description": "Batería de cocina 8 piezas",
+          "quantity": "12",
+          "unit_price": "54.12",
+          "total": "649.44"
+        },
+        {
+          "description": "Escurridor plegable silicona",
+          "quantity": "6",
+          "unit_price": "72.14",
+          "total": "432.84"
+        },
+        {
+          "description": "Olla a presión 6 L",
+          "quantity": "24",
+          "unit_price": "71.23",
+          "total": "1709.52"
+        },
+        {
+          "description": "Tabla de corte bambú 40×30",
+          "quantity": "4",
+          "unit_price": "76.41",
+          "total": "305.64"
+        },
+        {
+          "description": "Vajilla porcelana 18 piezas",
+          "quantity": "10",
+          "unit_price": "30.78",
+          "total": "307.80"
+        }
+      ],
+      "subtotal": "3646.48",
+      "tax_rate": "21",
+      "tax_amount": "765.76",
+      "total": "4412.24",
+      "reverse_charge": false
+    },
+    {
+      "vendor_name": "Menaje Industrial Levante, S.A.",
+      "vendor_tax_id": "ESA46228901",
+      "invoice_number": "2026/00127",
+      "issue_date": "2026-01-08",
+      "due_date": "2026-01-23",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Cazuela de acero inoxidable 5 L",
+          "quantity": "48",
+          "unit_price": "4.89",
+          "total": "234.72"
+        },
+        {
+          "description": "Cafetera italiana 6 tazas",
+          "quantity": "1",
+          "unit_price": "64.58",
+          "total": "64.58"
+        },
+        {
+          "description": "Juego de cuchillos cocina (6 pzas.)",
+          "quantity": "10",
+          "unit_price": "70.27",
+          "total": "702.70"
+        },
+        {
+          "description": "Fuente de horno cerámica 32 cm",
+          "quantity": "1",
+          "unit_price": "21.76",
+          "total": "21.76"
+        },
+        {
+          "description": "Olla a presión 6 L",
+          "quantity": "12",
+          "unit_price": "47.07",
+          "total": "564.84"
+        },
+        {
+          "description": "Ensaladera cristal templado 26 cm",
+          "quantity": "12",
+          "unit_price": "14.02",
+          "total": "168.24"
+        }
+      ],
+      "subtotal": "1756.84",
+      "tax_rate": "21",
+      "tax_amount": "368.94",
+      "total": "2125.78",
+      "reverse_charge": false
+    }
+  ]
+}

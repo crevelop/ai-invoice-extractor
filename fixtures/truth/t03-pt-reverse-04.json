@@ -1,0 +1,45 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Louças do Atlântico, Lda.",
+      "vendor_tax_id": "PT509884217",
+      "invoice_number": "FT 2026/175",
+      "issue_date": "2026-01-21",
+      "due_date": "2026-03-07",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Tábua de corte em faia",
+          "quantity": "12",
+          "unit_price": "56.85",
+          "total": "682.20"
+        },
+        {
+          "description": "Panela inox fundo triplo 4 L",
+          "quantity": "1",
+          "unit_price": "2.40",
+          "total": "2.40"
+        },
+        {
+          "description": "Serviço de café porcelana 12 pçs.",
+          "quantity": "2",
+          "unit_price": "39.97",
+          "total": "79.94"
+        },
+        {
+          "description": "Frigideira cerâmica 28 cm",
+          "quantity": "2",
+          "unit_price": "7.40",
+          "total": "14.80"
+        }
+      ],
+      "subtotal": "779.34",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "779.34",
+      "reverse_charge": true
+    }
+  ]
+}

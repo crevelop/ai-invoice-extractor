@@ -1,0 +1,39 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Küchenprofi Rheinland GmbH",
+      "vendor_tax_id": "DE812940517",
+      "invoice_number": "RE-2026-0261",
+      "issue_date": "2026-04-24",
+      "due_date": "2026-05-24",
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Auflaufform Keramik 34 cm",
+          "quantity": "12",
+          "unit_price": "37.92",
+          "total": "455.04"
+        },
+        {
+          "description": "Schüsselset Glas (4 Stück)",
+          "quantity": "1",
+          "unit_price": "8.78",
+          "total": "8.78"
+        },
+        {
+          "description": "Salatschleuder Edelstahl",
+          "quantity": "12",
+          "unit_price": "59.50",
+          "total": "714.00"
+        }
+      ],
+      "subtotal": "1177.82",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "1177.82",
+      "reverse_charge": true
+    }
+  ]
+}

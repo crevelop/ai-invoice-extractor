@@ -1,0 +1,63 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Brava Kitchen Supplies, S.L.",
+      "vendor_tax_id": "ESB67443210",
+      "invoice_number": "BKS-369",
+      "issue_date": "2026-06-10",
+      "due_date": null,
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Cast iron dutch oven 4.7 L",
+          "quantity": "10",
+          "unit_price": "68.56",
+          "total": "685.60"
+        },
+        {
+          "description": "Stainless steel mixing bowl set (5 pcs)",
+          "quantity": "12",
+          "unit_price": "87.69",
+          "total": "1052.28"
+        },
+        {
+          "description": "Glass food storage containers (8 pcs)",
+          "quantity": "2",
+          "unit_price": "21.58",
+          "total": "43.16"
+        },
+        {
+          "description": "Stackable spice jars (12 pcs)",
+          "quantity": "1",
+          "unit_price": "59.36",
+          "total": "59.36"
+        },
+        {
+          "description": "Bamboo serving tray 45×30 cm",
+          "quantity": "1",
+          "unit_price": "49.49",
+          "total": "49.49"
+        },
+        {
+          "description": "Ceramic dinnerware set 16 pcs",
+          "quantity": "4",
+          "unit_price": "46.74",
+          "total": "186.96"
+        },
+        {
+          "description": "Double-wall glass tumblers (6 pcs)",
+          "quantity": "4",
+          "unit_price": "59.76",
+          "total": "239.04"
+        }
+      ],
+      "subtotal": "2315.89",
+      "tax_rate": "21",
+      "tax_amount": "486.34",
+      "total": "2802.23",
+      "reverse_charge": false
+    }
+  ]
+}

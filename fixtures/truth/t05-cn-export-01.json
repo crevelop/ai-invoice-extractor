@@ -1,0 +1,39 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Guangzhou Brightware Housewares Co., Ltd.",
+      "vendor_tax_id": "91440101MA9W2XK37L",
+      "invoice_number": "GBH-20260293",
+      "issue_date": "2026-06-03",
+      "due_date": "2026-07-18",
+      "currency": "USD",
+      "line_items": [
+        {
+          "description": "Cast iron dutch oven 4.7 L",
+          "quantity": "48",
+          "unit_price": "60.49",
+          "total": "2903.52"
+        },
+        {
+          "description": "Kitchen scale digital 5 kg",
+          "quantity": "6",
+          "unit_price": "14.85",
+          "total": "89.10"
+        },
+        {
+          "description": "Ceramic dinnerware set 16 pcs",
+          "quantity": "48",
+          "unit_price": "62.70",
+          "total": "3009.60"
+        }
+      ],
+      "subtotal": "6002.22",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "6002.22",
+      "reverse_charge": false
+    }
+  ]
+}

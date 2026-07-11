@@ -1,0 +1,57 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Brava Kitchen Supplies, S.L.",
+      "vendor_tax_id": "ESB67443210",
+      "invoice_number": "BKS-360",
+      "issue_date": "2026-02-04",
+      "due_date": null,
+      "currency": "EUR",
+      "line_items": [
+        {
+          "description": "Non-stick frying pan 28 cm",
+          "quantity": "10",
+          "unit_price": "78.81",
+          "total": "788.10"
+        },
+        {
+          "description": "Glass food storage containers (8 pcs)",
+          "quantity": "1",
+          "unit_price": "27.54",
+          "total": "27.54"
+        },
+        {
+          "description": "Bamboo serving tray 45×30 cm",
+          "quantity": "24",
+          "unit_price": "32.73",
+          "total": "785.52"
+        },
+        {
+          "description": "Kitchen scale digital 5 kg",
+          "quantity": "6",
+          "unit_price": "35.88",
+          "total": "215.28"
+        },
+        {
+          "description": "Cast iron dutch oven 4.7 L",
+          "quantity": "10",
+          "unit_price": "12.07",
+          "total": "120.70"
+        },
+        {
+          "description": "Stackable spice jars (12 pcs)",
+          "quantity": "24",
+          "unit_price": "94.47",
+          "total": "2267.28"
+        }
+      ],
+      "subtotal": "4204.42",
+      "tax_rate": "21",
+      "tax_amount": "882.93",
+      "total": "5087.35",
+      "reverse_charge": false
+    }
+  ]
+}

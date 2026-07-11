@@ -1,0 +1,63 @@
+{
+  "kind": "invoice",
+  "document_type": "invoice",
+  "invoices": [
+    {
+      "vendor_name": "Guangzhou Brightware Housewares Co., Ltd.",
+      "vendor_tax_id": "91440101MA9W2XK37L",
+      "invoice_number": "GBH-20260297",
+      "issue_date": "2026-04-27",
+      "due_date": "2026-06-26",
+      "currency": "USD",
+      "line_items": [
+        {
+          "description": "Silicone utensil set (10 pcs)",
+          "quantity": "10",
+          "unit_price": "63.96",
+          "total": "639.60"
+        },
+        {
+          "description": "Bamboo serving tray 45×30 cm",
+          "quantity": "10",
+          "unit_price": "53.35",
+          "total": "533.50"
+        },
+        {
+          "description": "Cast iron dutch oven 4.7 L",
+          "quantity": "12",
+          "unit_price": "38.41",
+          "total": "460.92"
+        },
+        {
+          "description": "Stainless steel mixing bowl set (5 pcs)",
+          "quantity": "48",
+          "unit_price": "15.57",
+          "total": "747.36"
+        },
+        {
+          "description": "Glass food storage containers (8 pcs)",
+          "quantity": "12",
+          "unit_price": "23.48",
+          "total": "281.76"
+        },
+        {
+          "description": "Double-wall glass tumblers (6 pcs)",
+          "quantity": "2",
+          "unit_price": "60.53",
+          "total": "121.06"
+        },
+        {
+          "description": "Ceramic dinnerware set 16 pcs",
+          "quantity": "2",
+          "unit_price": "10.70",
+          "total": "21.40"
+        }
+      ],
+      "subtotal": "2805.60",
+      "tax_rate": "0",
+      "tax_amount": "0.00",
+      "total": "2805.60",
+      "reverse_charge": false
+    }
+  ]
+}
