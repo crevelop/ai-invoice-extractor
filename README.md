@@ -3,8 +3,9 @@
 Schema-driven invoice extraction: a deterministic pipeline with exactly one AI
 call, measured with evals. See [SPEC.md](SPEC.md) for the full design.
 
-**Status:** build step 2 of 9 — fixture corpus + walkthrough chapters 1–3.
-The extractor engine, validation/gating, and eval tables land in later steps.
+**Status:** build step 3 of 9 — the `extractor/` engine + validation/gating
+(chapter 4). Gold-label evals, prompt chaining, and the schema-swap demo land
+in later steps.
 
 ## Walkthrough (video chapters)
 
@@ -19,6 +20,38 @@ need `ANTHROPIC_API_KEY` in `.env`.
    + instructions in, plain text out — great until you try to parse it
 3. [`3-structured-output.py`](walkthrough/3-structured-output.py) — the same
    call with a typed schema; prose → typed object
+4. [`4-validation.py`](walkthrough/4-validation.py) — deterministic rules +
+   confidence gate: AUTO_ACCEPT / NEEDS_REVIEW / REJECT, review queue as JSONL
+
+## The engine
+
+Chapters 1–3 code, packaged (chapters 4+ import from here — same code, one
+import). The pipeline is generic; [`profiles/`](profiles/) holds everything
+use-case-specific:
+
+```python
+from extractor import extract
+from profiles.iberia_invoice import IBERIA_INVOICE
+
+result = extract("invoice.pdf", IBERIA_INVOICE)
+result.data        # typed IberiaInvoice instance (None on REJECT)
+result.field_meta  # per-field confidence + flags
+result.validation  # passed/failed business rules
+result.cost        # tokens in/out + $ estimate
+result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
+```
+
+- [`extractor/adapters.py`](extractor/adapters.py) — PDF/scan/photo → one `Document`
+- [`extractor/providers/anthropic.py`](extractor/providers/anthropic.py) — the
+  ONE schema-enforced AI call (model + pricing single source)
+- [`extractor/validate.py`](extractor/validate.py) — rule runner + locale-aware
+  `Money` (accepts `1.234,56`)
+- [`extractor/gate.py`](extractor/gate.py) — rules + confidence → decision
+- [`profiles/iberia_invoice.py`](profiles/iberia_invoice.py) — the worked
+  example: schema + 6 business rules + gate policy (SPEC §4)
+
+Rules and gate are plain code, so they get plain tests:
+`uv run pytest tests/test_validation.py` (no API key needed).
 
 ## Fixtures (SPEC §5.5 failure matrix)
 

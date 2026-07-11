@@ -17,8 +17,8 @@ assert os.environ.get("ANTHROPIC_API_KEY"), \
     "Missing ANTHROPIC_API_KEY — copy .env.example to .env and add your key."
 
 # Cheapest vision-capable Anthropic model (project decision, CLAUDE.md).
-# Chapters 1–3 are standalone; the single-source constants module arrives
-# with the extractor/ package in build step 3.
+# Chapters 1–3 stay standalone; from chapter 4 on these constants live in
+# extractor/providers/anthropic.py (the single source).
 MODEL = "claude-haiku-4-5"
 PRICE_IN, PRICE_OUT = 1.00, 5.00  # $ per 1M tokens
 
