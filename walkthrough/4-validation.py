@@ -1,37 +1,30 @@
-# %% cell 1: setup — imports, repo root on sys.path (run this cell first)
+# %% cell 1: setup — .env key, the Iberia profile (run this cell first)
 # Chapter 4 — Validation & gating: the AI read the document; code now checks
 # it and decides. AUTO_ACCEPT / NEEDS_REVIEW / REJECT.
-#
-# Transition note: the code from chapters 1-3 now lives in `extractor/` —
-# same adapters, same structured-output call, packaged so the remaining
-# blocks snap on cleanly. What was ~40 lines per chapter is now one import.
 
 import json
-import os
 import sys
 from dataclasses import replace
 from pathlib import Path
 
-from dotenv import load_dotenv
-
-# repo root (has extractor/ and fixtures/) — works as a script (__file__)
-# and cell-by-cell in the interactive window (cwd)
+# works as a script (__file__) and cell-by-cell in the interactive window (cwd)
 _here = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-ROOT = next(p for p in [_here, *_here.parents] if (p / "extractor").is_dir())
-sys.path.insert(0, str(ROOT))
-FIXTURES = ROOT / "fixtures"
-
-load_dotenv(ROOT / ".env")
-assert os.environ.get("ANTHROPIC_API_KEY"), \
-    "Missing ANTHROPIC_API_KEY — copy .env.example to .env and add your key."
+sys.path.insert(0, str(next(p for p in [_here, *_here.parents]
+                            if (p / "extractor").is_dir())))
 
 from extractor import Decision, decide, extract, run_rules  # noqa: E402
 from profiles.iberia_invoice import IBERIA_INVOICE, duplicate_rule  # noqa: E402
+from walkthrough.utils import (  # noqa: E402
+    FIXTURES, INVOICES, REJECTS, ROOT, require_api_key, show,
+)
+
+require_api_key()
 
 # %% cell 2: the profile — schema + rules + gate, printed (no API call)
-# Everything specific to Iberia Home Goods lives in ONE object. The schema
-# says what to extract; the rules are deterministic math the model can't
-# sweet-talk its way past; the gate policy says when a human looks.
+# Everything specific to Iberia Home Goods lives in ONE object
+# (profiles/iberia_invoice.py). The schema says what to extract; the rules
+# are deterministic math the model can't sweet-talk its way past; the gate
+# policy says when a human looks.
 
 profile = IBERIA_INVOICE
 print(f"document type   {profile.document_type}")
@@ -42,31 +35,12 @@ print("rules:")
 for rule in profile.rules:
     print(f"  · {rule.name}")
 
-
-def show(result):
-    # One result, one screen: decision, checks, fields, cost.
-    print(f"decision: {result.decision}   [{result.cost}]")
-    for reason in result.reasons:
-        print(f"  ! {reason}")
-    for check in result.validation:
-        mark = "✓" if check.passed else "✗"
-        print(f"  {mark} {check.rule}" + (f" — {check.detail}" if check.detail else ""))
-    if result.data is None:
-        print(f"  (no data extracted — document read as '{result.document_type}')")
-        return
-    print(f"  {'field':<16}{'value':<34}{'confidence'}")
-    for name, meta in result.field_meta.items():
-        value = getattr(result.data, name)
-        text = f"{len(value)} items" if name == "line_items" else str(value)
-        flags = f"   ⚑ {', '.join(meta.flags)}" if meta.flags else ""
-        print(f"  {name:<16}{text[:32]:<34}{meta.confidence}{flags}")
-
 # %% cell 3: the happy path — one clean invoice, end to end (~$0.003)
 # One call runs the whole pipeline: adapter → AI extraction → Pydantic parse
 # → rules → gate. Every rule passes, every field is confident: no human
 # needs to see this document.
 
-ok = extract(FIXTURES / "docs/invoices/t01-es-clean-01.pdf", profile)
+ok = extract(INVOICES / "t01-es-clean-01.pdf", profile)
 show(ok)
 
 # %% cell 4: DEMO TAMPER — flip one digit, watch the rules catch it (no API call)
@@ -93,7 +67,7 @@ for reason in reasons:
 # a naive extractor would happily "extract" it and someone would pay a
 # document that isn't a bill. The document-type check refuses it instead.
 
-quote = extract(FIXTURES / "docs/reject/r2-quote-01.pdf", profile)
+quote = extract(REJECTS / "r2-quote-01.pdf", profile)
 show(quote)
 
 # %% cell 6: the gate at work — a mini batch + the review queue (6 calls, ~$0.02)

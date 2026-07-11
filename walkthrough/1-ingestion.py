@@ -1,92 +1,33 @@
-# %% cell 1: setup — imports + locate fixtures/ (run this cell first)
+# %% cell 1: setup — repo root on sys.path (run this cell first)
 # Chapter 1 — Input adapters: a PDF is not text, and a photographed receipt
 # is not a PDF. Two very different inputs normalize into ONE Document shape,
 # and the rest of the pipeline never thinks about sources again.
+#
+# The implementation is extractor/adapters.py — keep it open alongside;
+# this step just runs it.
 
-from dataclasses import dataclass, field
+import sys
 from pathlib import Path
 
-import pypdfium2 as pdfium
-from PIL import Image
-
-# fixtures/ lives at the repo root — find it whether this runs as a script
-# (__file__) or cell-by-cell in the interactive window (no __file__, use cwd)
+# works as a script (__file__) and cell-by-cell in the interactive window (cwd)
 _here = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-FIXTURES = next(p / "fixtures" for p in [_here, *_here.parents]
-                if (p / "fixtures").is_dir())
+sys.path.insert(0, str(next(p for p in [_here, *_here.parents]
+                            if (p / "extractor").is_dir())))
 
-# %% cell 2: the Document shape + the three adapters (defines, no output)
-# The one shape everything funnels into. Two kinds:
-#   "text"  — the PDF had a real text layer; we read it directly (cheap, exact)
-#   "image" — scan or photo; no text to read, we carry page images instead
-# Downstream (chapters 2+) only ever asks: text or images?
+from extractor import DocumentLoader  # noqa: E402
+from walkthrough.utils import INVOICES, sample_photo  # noqa: E402
 
-
-@dataclass
-class Document:
-    source: str
-    kind: str  # "text" | "image"
-    text: str | None = None
-    page_images: list[Image.Image] = field(default_factory=list)
-
-    @property
-    def pages(self) -> int:
-        return max(1, len(self.page_images))
-
-
-MAX_EDGE = 1568  # downscale page renders: plenty for a vision model, cheap to send
-
-
-def load_pdf(path: Path) -> Document:
-    # Try the text layer first — digital-native PDFs carry the actual characters.
-    pdf = pdfium.PdfDocument(path)
-    text = "\n".join(p.get_textpage().get_text_bounded() for p in pdf)
-    if len(text.strip()) > 100:  # a real text layer, not OCR junk or emptiness
-        pdf.close()
-        return Document(source=path.name, kind="text", text=text)
-
-    # No text layer (a scan): rasterize each page instead.
-    images = []
-    for page in pdf:
-        img = page.render(scale=2).to_pil()
-        img.thumbnail((MAX_EDGE, MAX_EDGE))
-        images.append(img)
-    pdf.close()
-    return Document(source=path.name, kind="image", page_images=images)
-
-
-def load_image(path: Path) -> Document:
-    # A photo is already an image — just normalize the size.
-    img = Image.open(path).convert("RGB")
-    img.thumbnail((MAX_EDGE, MAX_EDGE))
-    return Document(source=path.name, kind="image", page_images=[img])
-
-
-def load(path: Path) -> Document:
-    # The adapter: one entry point, any supported source.
-    if path.suffix.lower() == ".pdf":
-        return load_pdf(path)
-    return load_image(path)
-
-
-# %% cell 3: run the adapter — three sources in, one table out
+# %% cell 2: run the adapter — three sources in, one table out
 # Three real inputs, three very different files on disk:
 #   1. a digital-native vendor PDF        (has a text layer)
 #   2. a scanned copy of an invoice       (PDF, but zero extractable text)
 #   3. a photographed restaurant receipt  (not a PDF at all)
 
-photos = sorted(p for p in (FIXTURES / "photo").iterdir()
-                if p.suffix.lower() in (".jpg", ".jpeg", ".png"))
-# prefer the real photo once it replaces the committed placeholder
-photo = next((p for p in photos if "placeholder" not in p.name), photos[0])
+loader = DocumentLoader()
 
-inputs = [
-    FIXTURES / "docs/invoices/t01-es-clean-01.pdf",
-    FIXTURES / "docs/invoices/t09-scanned-01.pdf",
-    photo,
-]
-
-docs = [load(p) for p in inputs]
+docs = [loader.load(INVOICES / "t01-es-clean-01.pdf"),
+        loader.load(INVOICES / "t09-scanned-01.pdf"),
+        loader.load(sample_photo())]
 
 print(f"{'source':<28}{'kind':<8}{'pages':>6}{'text chars':>12}")
 print("-" * 54)
@@ -94,8 +35,10 @@ for doc in docs:
     chars = len(doc.text) if doc.text else 0
     print(f"{doc.source:<28}{doc.kind:<8}{doc.pages:>6}{chars:>12,}")
 
-# %% cell 4: peek inside each Document (needs cell 3's `docs`)
-# Same shape, three sources. Peek inside each one:
+# %% cell 3: peek inside each Document (needs cell 2's `docs`)
+# Same shape, three sources. Two kinds only:
+#   "text"  — the PDF carried real characters; we read them directly
+#   "image" — scan or photo; we carry downscaled page images instead
 
 digital, scanned, photographed = docs
 
@@ -108,4 +51,6 @@ print(f"\nscanned PDF → no text layer; carrying {scanned.pages} page image "
 print(f"photo       → {photographed.pages} image "
       f"({photographed.page_images[0].width}×{photographed.page_images[0].height} px)")
 
-print("\nFrom here on, the pipeline sees `Document` — never a file format.")
+# %% cell 4: wrap-up (narration only, nothing to run)
+# From here on, the pipeline sees `Document` — never a file format.
+# Downstream code only ever asks one question: text or images?

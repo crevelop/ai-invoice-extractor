@@ -138,7 +138,7 @@ README headline = the per-field accuracy table + the gate-quality number + the c
 
 ## 6. Repo layout (Dave-style walkthrough + reusable engine)
 
-Structure rules borrowed from ai-cookbook: numbered scripts = video chapters; every script self-contained and runnable top-to-bottom in the VS Code interactive window; mermaid diagram in the README before any code; copy-paste friendly.
+Structure rules borrowed from ai-cookbook: numbered scripts = video chapters; every script runnable top-to-bottom in the VS Code interactive window; steps stay lean — they import the engine and demo ONE concept, and the only inline definitions are the concept itself (e.g. chapter 3's schema); mermaid diagram in the README before any code; copy-paste friendly.
 
 ```
 ai-invoice-extractor/
@@ -178,15 +178,15 @@ Teaching arc — **follow the process; each step introduces the concept the proc
 6. *Schema as contract*: swap one profile file, process a different document type. The system was never about invoices.
 7. *Evals*: unit tests for AI, with an answer key. Chapter runs the loop on ~10 documents, shows the table, then makes one improvement and reruns — the before/after is the lesson. The full matrix (all docs, providers, ablations) lives in `evals/` and feeds the README tables.
 
-Chapters 1–3 are fully inline (each fits on one screen). Chapter 4 opens with a one-sentence transition: "the code from chapters 1–3 now lives in `extractor/` — same code, packaged so the remaining blocks snap on cleanly." The package is a transition, never a chapter. Copy-pasters grab a walkthrough file; developers import `extractor/`.
+Every chapter imports from `extractor/` — implementations live in the package behind proper abstractions (`DocumentLoader` for inputs, `LLMProvider`/`AnthropicProvider` wrapping the selected model), and shared demo plumbing (paths, key check, pretty-printers) lives in `walkthrough/utils.py`, never in a step. Copy-pasters grab the package plus a walkthrough file; developers import `extractor/`.
 
 Style rules: plain Python scripts runnable cell-by-cell in the VS Code interactive window, `uv` for deps, no framework, no DB, no UI. The CLI + interactive window is the demo surface.
 
 ## 7. Build order (with Claude Code)
 
 1. Fixture generator: synthetic invoices as HTML→PDF templates + one photographed receipt image (FIRST — everything downstream needs documents; the photo powers the chapter-1 adapter demo).
-2. `walkthrough/1-ingestion`, `2-ai-inference`, `3-structured-output` — fully inline, no package yet. These three are small; get the teaching contrast (plain text → typed schema) right.
-3. Move chapters 1–3 code into the `extractor/` package (no new chapter — a transition); build `walkthrough/4-validation` on top: rules + confidence gate + JSONL review queue.
+2. `walkthrough/1-ingestion`, `2-ai-inference`, `3-structured-output` — lean steps over the package's adapters + provider. These three are small; get the teaching contrast (plain text → typed schema) right.
+3. Round out the `extractor/` package (engine, rules, gate); build `walkthrough/4-validation` on top: rules + confidence gate + JSONL review queue.
 4. Gold labels + eval runner; first accuracy/cost tables (`walkthrough/7-evals` v1).
 5. Prompt chaining (`walkthrough/5-prompt-chaining`): verification call on critical fields, flag-don't-correct merge; rerun evals for the ablation rows.
 6. Failure matrix docs; fix what's fixable (field descriptions, few-shot examples), document what isn't.

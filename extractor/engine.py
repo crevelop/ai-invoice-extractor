@@ -10,12 +10,10 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field, create_model
 
-from . import adapters
-from .adapters import Document
+from .adapters import Document, load
 from .gate import Decision, decide
 from .profiles import Confidence, DocumentProfile
-from .providers import anthropic as provider
-from .providers.anthropic import Cost
+from .providers import Cost, LLMProvider, default_provider
 from .validate import RuleResult, run_rules
 
 
@@ -90,16 +88,16 @@ def extract[T: BaseModel](
     document: Document | Path | str,
     profile: DocumentProfile[T],
     *,
-    model: str | None = None,
+    provider: LLMProvider | None = None,
 ) -> ExtractionResult[T]:
-    doc = document if isinstance(document, Document) else adapters.load(document)
+    doc = document if isinstance(document, Document) else load(document)
+    llm = provider or default_provider()
 
     # The one AI call.
-    envelope, cost = provider.call_structured(
+    envelope, cost = llm.extract_structured(
         doc,
         _envelope_model(profile),
         _INSTRUCTIONS.format(document_type=profile.document_type),
-        model=model,
     )
 
     # From here on: code.

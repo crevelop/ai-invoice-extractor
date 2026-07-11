@@ -25,8 +25,8 @@ need `ANTHROPIC_API_KEY` in `.env`.
 
 ## The engine
 
-Chapters 1–3 code, packaged (chapters 4+ import from here — same code, one
-import). The pipeline is generic; [`profiles/`](profiles/) holds everything
+The walkthrough steps demo concepts; this package owns the implementations.
+The pipeline is generic; [`profiles/`](profiles/) holds everything
 use-case-specific:
 
 ```python
@@ -41,9 +41,11 @@ result.cost        # tokens in/out + $ estimate
 result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
 ```
 
-- [`extractor/adapters.py`](extractor/adapters.py) — PDF/scan/photo → one `Document`
-- [`extractor/providers/anthropic.py`](extractor/providers/anthropic.py) — the
-  ONE schema-enforced AI call (model + pricing single source)
+- [`extractor/adapters.py`](extractor/adapters.py) — `DocumentLoader`:
+  PDF/scan/photo → one `Document`
+- [`extractor/providers/`](extractor/providers/) — the `LLMProvider` interface
+  + `AnthropicProvider` wrapping the selected model (pricing single source;
+  swapping LLMs = one new subclass)
 - [`extractor/validate.py`](extractor/validate.py) — rule runner + locale-aware
   `Money` (accepts `1.234,56`)
 - [`extractor/gate.py`](extractor/gate.py) — rules + confidence → decision
