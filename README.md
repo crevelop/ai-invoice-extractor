@@ -3,8 +3,21 @@
 Schema-driven invoice extraction: a deterministic pipeline with exactly one AI
 call, measured with evals. See [SPEC.md](SPEC.md) for the full design.
 
-**Status:** build step 1 of 9 — fixture corpus. The extraction engine,
-walkthrough chapters, and eval tables land in later steps.
+**Status:** build step 2 of 9 — fixture corpus + walkthrough chapters 1–3.
+The extractor engine, validation/gating, and eval tables land in later steps.
+
+## Walkthrough (video chapters)
+
+Each file runs top-to-bottom (`uv run python walkthrough/N-*.py`) and
+cell-by-cell in the VS Code interactive window. Chapters 2+ need
+`ANTHROPIC_API_KEY` in `.env`.
+
+1. [`1-ingestion.py`](walkthrough/1-ingestion.py) — input adapters: PDF, scan,
+   and photo normalize into one `Document` shape
+2. [`2-ai-inference.py`](walkthrough/2-ai-inference.py) — call the API: content
+   + instructions in, plain text out — great until you try to parse it
+3. [`3-structured-output.py`](walkthrough/3-structured-output.py) — the same
+   call with a typed schema; prose → typed object
 
 ## Fixtures (SPEC §5.5 failure matrix)
 
