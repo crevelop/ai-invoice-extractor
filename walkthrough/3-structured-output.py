@@ -20,7 +20,10 @@ assert os.environ.get("ANTHROPIC_API_KEY"), \
     "Missing ANTHROPIC_API_KEY — copy .env.example to .env and add your key."
 
 MODEL = "claude-haiku-4-5"  # same model, same page image, same instruction
-FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
+# works as a script (__file__) and cell-by-cell in the interactive window (cwd)
+_here = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
+FIXTURES = next(p / "fixtures" for p in [_here, *_here.parents]
+                if (p / "fixtures").is_dir())
 client = anthropic.Anthropic()
 
 # %%

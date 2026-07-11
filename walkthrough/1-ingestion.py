@@ -9,7 +9,11 @@ from pathlib import Path
 import pypdfium2 as pdfium
 from PIL import Image
 
-FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
+# fixtures/ lives at the repo root — find it whether this runs as a script
+# (__file__) or cell-by-cell in the interactive window (no __file__, use cwd)
+_here = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
+FIXTURES = next(p / "fixtures" for p in [_here, *_here.parents]
+                if (p / "fixtures").is_dir())
 
 # %%
 # The one shape everything funnels into. Two kinds:

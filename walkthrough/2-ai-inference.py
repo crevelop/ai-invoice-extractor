@@ -22,7 +22,10 @@ assert os.environ.get("ANTHROPIC_API_KEY"), \
 MODEL = "claude-haiku-4-5"
 PRICE_IN, PRICE_OUT = 1.00, 5.00  # $ per 1M tokens
 
-FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
+# works as a script (__file__) and cell-by-cell in the interactive window (cwd)
+_here = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
+FIXTURES = next(p / "fixtures" for p in [_here, *_here.parents]
+                if (p / "fixtures").is_dir())
 client = anthropic.Anthropic()
 
 # %%
