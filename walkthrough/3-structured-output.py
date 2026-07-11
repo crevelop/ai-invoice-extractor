@@ -1,4 +1,4 @@
-# %%
+# %% cell 1: setup — .env key, client, model (run this cell first)
 # Chapter 3 — Structured outputs: the SAME call as chapter 2, plus a typed
 # schema. The contrast is the lesson: prose out → typed object out.
 
@@ -26,7 +26,7 @@ FIXTURES = next(p / "fixtures" for p in [_here, *_here.parents]
                 if (p / "fixtures").is_dir())
 client = anthropic.Anthropic()
 
-# %%
+# %% cell 2: the contract — Pydantic model + the JSON Schema it compiles to
 # The contract. A Pydantic model does three jobs at once:
 #   1. it compiles to a JSON Schema the API *enforces* on the response
 #   2. field descriptions double as extraction instructions
@@ -44,7 +44,7 @@ class InvoiceSummary(BaseModel):
 
 print(json.dumps(InvoiceSummary.model_json_schema(), indent=2)[:520], "…")
 
-# %%
+# %% cell 3: extract() + first typed result (~$0.002 API call)
 # Same call as chapter 2 — messages.parse() instead of messages.create(),
 # and the schema rides along. Nothing else changes.
 
@@ -80,7 +80,7 @@ def extract(pdf_path: Path) -> InvoiceSummary:
 inv = extract(FIXTURES / "docs/invoices/t01-es-clean-01.pdf")
 print(inv)
 
-# %%
+# %% cell 4: typed payoff — Decimal math + date arithmetic (needs cell 3's `inv`)
 # Not a string — a typed object. The things chapter 2 couldn't do:
 
 print(f"inv.total       = {inv.total}  ({type(inv.total).__name__})")
@@ -88,7 +88,7 @@ print(f"inv.issue_date  = {inv.issue_date}  ({type(inv.issue_date).__name__})")
 print(f"due in 30 days  = {inv.issue_date + timedelta(days=30)}  (real date arithmetic)")
 print(f"total × 2       = {inv.total * 2}  (exact Decimal math, no float drift)")
 
-# %%
+# %% cell 5: the chapter-2 pain, replayed — two vendors, one shape (2 API calls)
 # And the chapter-2 pain, replayed: the same two invoices, different vendors,
 # different languages, different number formats — one shape out.
 
@@ -99,7 +99,7 @@ for pdf in ["t01-es-clean-01.pdf", "t04-de-reverse-01.pdf"]:
     print(f"{row.vendor_name:<32}{row.invoice_number:<16}"
           f"{row.issue_date.isoformat():<12}{f'{row.total} {row.currency}':>12}")
 
-# %%
+# %% cell 6: wrap-up (narration only, nothing to run)
 # No regex. No format guessing. `row.total` — every time, any vendor.
 # But is it CORRECT? The model can still misread a digit. Code can check
 # that — deterministically. → chapter 4: validation & gating.

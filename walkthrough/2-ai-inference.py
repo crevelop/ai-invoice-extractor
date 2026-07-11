@@ -1,4 +1,4 @@
-# %%
+# %% cell 1: setup — .env key, client, model (run this cell first)
 # Chapter 2 — AI inference: content + instructions in, plain text out.
 # The answer looks perfect — right up until you try to use it in code.
 
@@ -28,7 +28,7 @@ FIXTURES = next(p / "fixtures" for p in [_here, *_here.parents]
                 if (p / "fixtures").is_dir())
 client = anthropic.Anthropic()
 
-# %%
+# %% cell 2: helpers — page→PNG, ask(), cost() (defines, no output)
 # The chapter-1 adapter gave us page images — a vision model reads the page
 # exactly like the clerk does. Send one page + one instruction, get text back.
 
@@ -68,14 +68,14 @@ def cost(usage) -> str:
 INSTRUCTIONS = ("Extract the vendor name, invoice number, issue date "
                 "and total amount from this invoice.")
 
-# %%
+# %% cell 3: API call #1 — Spanish invoice (~$0.002)
 # Invoice #1 — a Spanish vendor. Watch how good this looks:
 
 answer_1, usage_1 = ask(FIXTURES / "docs/invoices/t01-es-clean-01.pdf", INSTRUCTIONS)
 print(answer_1)
 print(f"\n[{MODEL} · {cost(usage_1)}]")
 
-# %%
+# %% cell 4: API call #2 — German invoice, same instruction
 # Impressive. Now the exact same instruction on a different vendor — a German
 # invoice this time:
 
@@ -83,7 +83,7 @@ answer_2, usage_2 = ask(FIXTURES / "docs/invoices/t04-de-reverse-01.pdf", INSTRU
 print(answer_2)
 print(f"\n[{MODEL} · {cost(usage_2)}]")
 
-# %%
+# %% cell 5: the pain — try to parse both answers with code (needs cells 3+4)
 # Two perfect answers... in two different shapes. Different labels, different
 # ordering, different number formats. Now try to USE them — pull the total
 # out with code:
@@ -98,7 +98,7 @@ for name, answer in [("invoice 1", answer_1), ("invoice 2", answer_2)]:
         verdict = f"float() ValueError — {raw!r} is European-formatted!"
     print(f"{name}: regex found {raw!r:<14} → {verdict}")
 
-# %%
+# %% cell 6: wrap-up (narration only, nothing to run)
 # The information is all there. The FORMAT is the problem — prose was written
 # for humans. Every prompt tweak ("reply in JSON please!") is a patch on the
 # wrong layer. What we want is a contract, not a request. → chapter 3.

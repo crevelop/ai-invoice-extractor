@@ -1,4 +1,4 @@
-# %%
+# %% cell 1: setup — imports + locate fixtures/ (run this cell first)
 # Chapter 1 — Input adapters: a PDF is not text, and a photographed receipt
 # is not a PDF. Two very different inputs normalize into ONE Document shape,
 # and the rest of the pipeline never thinks about sources again.
@@ -15,7 +15,7 @@ _here = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd
 FIXTURES = next(p / "fixtures" for p in [_here, *_here.parents]
                 if (p / "fixtures").is_dir())
 
-# %%
+# %% cell 2: the Document shape + the three adapters (defines, no output)
 # The one shape everything funnels into. Two kinds:
 #   "text"  — the PDF had a real text layer; we read it directly (cheap, exact)
 #   "image" — scan or photo; no text to read, we carry page images instead
@@ -69,7 +69,7 @@ def load(path: Path) -> Document:
     return load_image(path)
 
 
-# %%
+# %% cell 3: run the adapter — three sources in, one table out
 # Three real inputs, three very different files on disk:
 #   1. a digital-native vendor PDF        (has a text layer)
 #   2. a scanned copy of an invoice       (PDF, but zero extractable text)
@@ -94,7 +94,7 @@ for doc in docs:
     chars = len(doc.text) if doc.text else 0
     print(f"{doc.source:<28}{doc.kind:<8}{doc.pages:>6}{chars:>12,}")
 
-# %%
+# %% cell 4: peek inside each Document (needs cell 3's `docs`)
 # Same shape, three sources. Peek inside each one:
 
 digital, scanned, photographed = docs
