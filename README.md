@@ -9,8 +9,9 @@ The extractor engine, validation/gating, and eval tables land in later steps.
 ## Walkthrough (video chapters)
 
 Each file runs top-to-bottom (`uv run python walkthrough/N-*.py`) and
-cell-by-cell in the VS Code interactive window. Chapters 2+ need
-`ANTHROPIC_API_KEY` in `.env`.
+cell-by-cell in the VS Code interactive window — select this project's
+`.venv` as the kernel (ipykernel ships as a dev dependency). Chapters 2+
+need `ANTHROPIC_API_KEY` in `.env`.
 
 1. [`1-ingestion.py`](walkthrough/1-ingestion.py) — input adapters: PDF, scan,
    and photo normalize into one `Document` shape
