@@ -9,7 +9,7 @@ from decimal import Decimal
 from pydantic import BaseModel, Field
 
 from extractor import AnthropicProvider, load
-from walkthrough.utils import INVOICES, require_api_key
+from extractor.utils import INVOICES, require_api_key
 
 require_api_key()
 llm = AnthropicProvider()  # same model, same document, same instruction

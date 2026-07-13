@@ -4,11 +4,11 @@
 # and the rest of the pipeline never thinks about sources again.
 #
 # The implementation is extractor/adapters.py — keep it open alongside;
-# this step just runs it. (`uv sync` installs the repo editable, so these
-# imports work as a script and in the interactive window alike.)
+# this lesson just runs it. (Lessons sit at the repo root next to extractor/,
+# so imports work as a script and in the interactive window, no path setup.)
 
 from extractor import DocumentLoader
-from walkthrough.utils import INVOICES, sample_photo
+from extractor.utils import INVOICES, sample_photo
 
 # %% cell 2: run the adapter — three sources in, one table out
 # Three real inputs, three very different files on disk:

@@ -7,10 +7,10 @@ from dataclasses import replace
 from pathlib import Path
 
 from extractor import Decision, decide, extract, run_rules
-from profiles.iberia_invoice import IBERIA_INVOICE, duplicate_rule
-from walkthrough.utils import (
+from extractor.utils import (
     FIXTURES, INVOICES, REJECTS, ROOT, require_api_key, show,
 )
+from profiles.iberia_invoice import IBERIA_INVOICE, duplicate_rule
 
 require_api_key()
 

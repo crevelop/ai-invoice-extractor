@@ -136,28 +136,30 @@ class IberiaInvoice(BaseModel):
 
 README headline = the per-field accuracy table + the gate-quality number + the cost table.
 
-## 6. Repo layout (Dave-style walkthrough + reusable engine)
+## 6. Repo layout (walkthrough + reusable engine)
 
-Structure rules borrowed from ai-cookbook: numbered scripts = video chapters; every script runnable top-to-bottom in the VS Code interactive window; steps stay lean — they import the engine and demo ONE concept, and the only inline definitions are the concept itself (e.g. chapter 3's schema); mermaid diagram in the README before any code; copy-paste friendly.
+Structure rules: numbered scripts = video chapters; every script runnable top-to-bottom in the VS Code interactive window; steps stay lean — they import the engine and demo ONE concept, and the only inline definitions are the concept itself (e.g. chapter 3's schema); mermaid diagram in the README before any code; copy-paste friendly.
+
+The numbered scripts live at the repo root, siblings of `extractor/` — that makes imports work with ZERO path configuration in both run modes (a script's own directory lands on `sys.path`; the interactive window's kernel starts in the file's directory). Clone, `uv sync`, run — nothing hidden.
 
 ```
 ai-invoice-extractor/
-  walkthrough/                  # the video: follow the process, one concept per step
-    1-ingestion.py              # concept: input adapters — PDF and photo normalize into one Document shape
-    2-ai-inference.py           # concept: AI inference — call the API: content + instructions in, plain text out
-    3-structured-output.py      # concept: structured outputs — same call, typed schema; the plain-text pain, solved
-    4-validation.py             # concept: deterministic validation & gating — rules + confidence → AUTO / REVIEW / REJECT
-    5-prompt-chaining.py        # concept: prompt chaining — a second AI call verifies critical fields; disagreement → review
-    6-schema-swap.py            # concept: schema as contract — swap the profile, same pipeline, new document type
-    7-evals.py                  # concept: evals — unit tests for AI with an answer key; ~10 docs live, full matrix in evals/
-  extractor/                   # the reusable engine (chapters 4+ import from here)
-    engine.py        # extract(document, profile) — the generic core
-    profiles.py      # DocumentProfile, Rule, GatePolicy
-    providers/       # anthropic.py, openai.py behind one interface
-    adapters.py      # input adapters: PDF, image → normalized Document (text layer / page images)
-    validate.py      # rule runner, locale normalization
-    verify.py        # optional prompt-chaining verification
+  1-ingestion.py       # concept: input adapters — PDF and photo normalize into one Document shape
+  2-ai-inference.py    # concept: AI inference — call the API: content + instructions in, plain text out
+  3-structured-output.py  # concept: structured outputs — same call, typed schema; the plain-text pain, solved
+  4-validation.py      # concept: deterministic validation & gating — rules + confidence → AUTO / REVIEW / REJECT
+  5-prompt-chaining.py # concept: prompt chaining — a second AI call verifies critical fields; disagreement → review
+  6-schema-swap.py     # concept: schema as contract — swap the profile, same pipeline, new document type
+  7-evals.py           # concept: evals — unit tests for AI with an answer key; ~10 docs live, full matrix in evals/
+  extractor/           # the reusable engine (every chapter imports from here)
+    engine.py          # extract(document, profile) — the generic core
+    profiles.py        # DocumentProfile, Rule, GatePolicy
+    providers/         # LLMProvider interface; anthropic.py today, openai.py later
+    adapters.py        # DocumentLoader: PDF, image → normalized Document (text layer / page images)
+    validate.py        # rule runner, locale normalization
+    verify.py          # optional prompt-chaining verification
     gate.py
+    utils.py           # demo plumbing: fixture paths, key check, pretty-printers
   profiles/
     iberia_invoice.py
     delivery_note.py   # the swap demo
@@ -178,20 +180,20 @@ Teaching arc — **follow the process; each step introduces the concept the proc
 6. *Schema as contract*: swap one profile file, process a different document type. The system was never about invoices.
 7. *Evals*: unit tests for AI, with an answer key. Chapter runs the loop on ~10 documents, shows the table, then makes one improvement and reruns — the before/after is the lesson. The full matrix (all docs, providers, ablations) lives in `evals/` and feeds the README tables.
 
-Every chapter imports from `extractor/` — implementations live in the package behind proper abstractions (`DocumentLoader` for inputs, `LLMProvider`/`AnthropicProvider` wrapping the selected model), and shared demo plumbing (paths, key check, pretty-printers) lives in `walkthrough/utils.py`, never in a step. Copy-pasters grab the package plus a walkthrough file; developers import `extractor/`.
+Every chapter imports from `extractor/` — implementations live in the package behind proper abstractions (`DocumentLoader` for inputs, `LLMProvider`/`AnthropicProvider` wrapping the selected model), and shared demo plumbing (paths, key check, pretty-printers) lives in `extractor/utils.py`, never in a step. Copy-pasters grab the package plus a chapter script; developers import `extractor/`.
 
 Style rules: plain Python scripts runnable cell-by-cell in the VS Code interactive window, `uv` for deps, no framework, no DB, no UI. The CLI + interactive window is the demo surface.
 
 ## 7. Build order (with Claude Code)
 
 1. Fixture generator: synthetic invoices as HTML→PDF templates + one photographed receipt image (FIRST — everything downstream needs documents; the photo powers the chapter-1 adapter demo).
-2. `walkthrough/1-ingestion`, `2-ai-inference`, `3-structured-output` — lean steps over the package's adapters + provider. These three are small; get the teaching contrast (plain text → typed schema) right.
-3. Round out the `extractor/` package (engine, rules, gate); build `walkthrough/4-validation` on top: rules + confidence gate + JSONL review queue.
-4. Gold labels + eval runner; first accuracy/cost tables (`walkthrough/7-evals` v1).
-5. Prompt chaining (`walkthrough/5-prompt-chaining`): verification call on critical fields, flag-don't-correct merge; rerun evals for the ablation rows.
+2. `1-ingestion`, `2-ai-inference`, `3-structured-output` — lean steps over the package's adapters + provider. These three are small; get the teaching contrast (plain text → typed schema) right.
+3. Round out the `extractor/` package (engine, rules, gate); build `4-validation` on top: rules + confidence gate + JSONL review queue.
+4. Gold labels + eval runner; first accuracy/cost tables (`7-evals` v1).
+5. Prompt chaining (`5-prompt-chaining`): verification call on critical fields, flag-don't-correct merge; rerun evals for the ablation rows.
 6. Failure matrix docs; fix what's fixable (field descriptions, few-shot examples), document what isn't.
 7. Second provider; rerun eval table across models.
-8. `walkthrough/6-schema-swap` demo (`delivery_note.py`).
+8. `6-schema-swap` demo (`delivery_note.py`).
 9. README with the numbers; record video.
 
 Estimated: 2 weeks at ~10 hrs/wk. API budget ~$10–20.
@@ -202,7 +204,7 @@ PO matching, approval routing, GL coding, ERP integration, OCR-model training, e
 
 ## 9. Video outline
 
-**Format:** no live coding. Code is pre-written; recording = running walkthrough files cell-by-cell in the interactive window, side by side with the results, explaining. The files are the script: comments = narration cues, cell boundaries = pacing beats, print output = the on-screen visual. Target ~20 minutes total.
+**Format:** no live coding. Code is pre-written; recording = running the chapter scripts cell-by-cell in the interactive window, side by side with the results, explaining. The files are the script: comments = narration cues, cell boundaries = pacing beats, print output = the on-screen visual. Target ~20 minutes total.
 
 *Title: "Automate Invoice Processing with AI (Done Right)"*
 *Alternates: "How to Extract Invoice Data with AI" · "AI Invoice Processing That Actually Works" · "Stop Typing Invoices — Let AI Do It"*

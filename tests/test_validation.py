@@ -1,13 +1,18 @@
 """Validation & gate tests — the deterministic half of the pipeline.
 No API calls: rules and the gate are plain code, so they get plain tests."""
 
+import sys
 from datetime import date
 from decimal import Decimal
+from pathlib import Path
 
 import pytest
 
-from extractor import Decision, decide, normalize_amount, run_rules
-from profiles.iberia_invoice import (
+# extractor/ and profiles/ live at the repo root, one level up from tests/
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from extractor import Decision, decide, normalize_amount, run_rules  # noqa: E402
+from profiles.iberia_invoice import (  # noqa: E402
     IBERIA_INVOICE,
     IberiaInvoice,
     LineItem,

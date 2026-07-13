@@ -1,7 +1,6 @@
-"""Shared walkthrough plumbing — presentation only, never pipeline logic.
-
-Paths, the API-key check, and pretty-printers live here so each step shows
-nothing but the concept it teaches.
+"""Shared demo plumbing for the chapter scripts — presentation only, never
+pipeline logic. Paths, the API-key check, and pretty-printers live here so
+each lesson shows nothing but the concept it teaches.
 """
 
 import os

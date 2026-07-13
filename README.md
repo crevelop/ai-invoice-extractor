@@ -9,25 +9,25 @@ in later steps.
 
 ## Walkthrough (video chapters)
 
-Each file runs top-to-bottom (`uv run python walkthrough/N-*.py`) and
-cell-by-cell in the VS Code interactive window — select this project's
-`.venv` as the kernel (ipykernel ships as a dev dependency). `uv sync`
-installs the repo as an editable package, so the walkthrough imports work
-from any directory with zero path setup. Chapters 2+ need
-`ANTHROPIC_API_KEY` in `.env`.
+The numbered lessons live at the repo root, right next to the `extractor/`
+package they import — so they run with zero path configuration. Each file
+runs top-to-bottom (`uv run python 1-ingestion.py`) and cell-by-cell in the
+VS Code interactive window — select this project's `.venv` as the kernel
+(ipykernel ships as a dev dependency). Chapters 2+ need `ANTHROPIC_API_KEY`
+in `.env`.
 
-1. [`1-ingestion.py`](walkthrough/1-ingestion.py) — input adapters: PDF, scan,
+1. [`1-ingestion.py`](1-ingestion.py) — input adapters: PDF, scan,
    and photo normalize into one `Document` shape
-2. [`2-ai-inference.py`](walkthrough/2-ai-inference.py) — call the API: content
+2. [`2-ai-inference.py`](2-ai-inference.py) — call the API: content
    + instructions in, plain text out — great until you try to parse it
-3. [`3-structured-output.py`](walkthrough/3-structured-output.py) — the same
+3. [`3-structured-output.py`](3-structured-output.py) — the same
    call with a typed schema; prose → typed object
-4. [`4-validation.py`](walkthrough/4-validation.py) — deterministic rules +
+4. [`4-validation.py`](4-validation.py) — deterministic rules +
    confidence gate: AUTO_ACCEPT / NEEDS_REVIEW / REJECT, review queue as JSONL
 
 ## The engine
 
-The walkthrough steps demo concepts; this package owns the implementations.
+The lessons demo concepts; this package owns the implementations.
 The pipeline is generic; [`profiles/`](profiles/) holds everything
 use-case-specific:
 
