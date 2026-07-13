@@ -1,12 +1,13 @@
 """Model providers behind one interface (LLMProvider).
 
-Anthropic today; openai.py lands in build step 7 so the eval table can
-compare providers without touching the engine or the walkthrough.
+Two vendors, one contract: the engine, the chapters and the evals talk to
+LLMProvider and never notice which company answers.
 """
 
 from .anthropic import AnthropicProvider
 from .base import Cost, LLMProvider
 from .cache import CachedProvider
+from .openai import OpenAIProvider
 
 _default: LLMProvider | None = None
 
@@ -21,4 +22,4 @@ def default_provider() -> LLMProvider:
 
 
 __all__ = ["AnthropicProvider", "CachedProvider", "Cost", "LLMProvider",
-           "default_provider"]
+           "OpenAIProvider", "default_provider"]

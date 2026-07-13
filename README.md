@@ -54,9 +54,10 @@ result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
 
 - [`extractor/adapters.py`](extractor/adapters.py) — `DocumentLoader`:
   PDF/scan/photo → one `Document`
-- [`extractor/providers/`](extractor/providers/) — the `LLMProvider` interface
-  + `AnthropicProvider` wrapping the selected model (pricing single source;
-  swapping LLMs = one new subclass)
+- [`extractor/providers/`](extractor/providers/) — the `LLMProvider`
+  interface with `AnthropicProvider` and `OpenAIProvider` behind it
+  (pricing single source per file; swapping LLMs = one new subclass,
+  and nothing else in the repo changes — that's the proof)
 - [`extractor/validate.py`](extractor/validate.py) — rule runner + locale-aware
   `Money` (accepts `1.234,56`)
 - [`extractor/verify.py`](extractor/verify.py) — the optional verification
@@ -78,9 +79,11 @@ Every document is scored against a verified answer key: the truth sidecars
 in [`fixtures/truth/`](fixtures/truth/), cross-checked against the rendered
 PDFs by [`evals/verify_gold.py`](evals/verify_gold.py). **You don't need to
 run the evals** — the results are committed here. If you change the system,
-`uv run python evals/run_evals.py` reproduces them (add `--verify` for the
-ablation row): it prints the estimated cost and asks before spending, and
-caches every extraction so re-runs with unchanged prompts/model are free.
+`uv run python evals/run_evals.py` reproduces them (`--verify` for the
+ablation row, `--provider openai` for the other vendor, `--verify-provider`
+to have one vendor check the other): it prints the estimated cost and asks
+before spending, and caches every extraction so re-runs with unchanged
+prompts/model are free.
 
 `claude-haiku-4-5` · 43 documents · with and without the chapter-5
 verification pass:
@@ -160,6 +163,8 @@ chapter 4, never baked into documents (see `fixtures/gen/__init__.py`).
 ## Setup
 
 Python 3.12 + [uv](https://docs.astral.sh/uv/). `uv sync`, then copy
-`.env.example` to `.env` and add API keys (needed from build step 2 onward).
+`.env.example` to `.env` and add API keys: `ANTHROPIC_API_KEY` for the
+walkthrough (build step 2 onward), `OPENAI_API_KEY` only if you want the
+cross-model evals.
 WeasyPrint (fixture generation only) needs Pango: `brew install pango` on
 macOS, `apt install libpango-1.0-0 libpangocairo-1.0-0` on Debian/Ubuntu.

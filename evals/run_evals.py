@@ -10,9 +10,13 @@ Guardrails:
   schema and model are free; delete the directory to force fresh calls
 - --sample runs one document per template (~12 docs) for quick iteration
 - --verify runs the chapter-5 ablation: same documents, verification pass
-  on, results written to results-verify.json for the README comparison
+  on, results written to a -verify results file for the README comparison
+- --provider picks the LLM vendor (the cross-model table); --verify-provider
+  lets a DIFFERENT vendor be the second reader — a truly independent witness
 
-Run: uv run python evals/run_evals.py [--sample] [--yes] [--verify] [--model NAME]
+Run: uv run python evals/run_evals.py [--sample] [--yes] [--verify]
+     [--provider anthropic|openai] [--verify-provider anthropic|openai]
+     [--model NAME]
 """
 
 import argparse
@@ -28,6 +32,7 @@ from extractor import (  # noqa: E402
     AnthropicProvider,
     CachedProvider,
     Decision,
+    OpenAIProvider,
     extract,
     load,
     verify,
@@ -35,7 +40,8 @@ from extractor import (  # noqa: E402
 from extractor.engine import _INSTRUCTIONS, _envelope_model  # noqa: E402
 from profiles.iberia_invoice import IBERIA_INVOICE  # noqa: E402
 
-EST_COST_PER_DOC = 0.006  # observed average with claude-haiku-4-5
+PROVIDERS = {"anthropic": AnthropicProvider, "openai": OpenAIProvider}
+EST_COST_PER_DOC = 0.007  # upper observed average across providers
 EST_VERIFY_PER_DOC = 0.003  # the second, critical-fields-only call
 CACHE_DIR = Path(__file__).parent / "cache"
 
@@ -48,14 +54,21 @@ def main() -> int:
                         help="skip the cost confirmation")
     parser.add_argument("--verify", action="store_true",
                         help="ablation: run with the verification pass on")
+    parser.add_argument("--provider", choices=PROVIDERS, default="anthropic",
+                        help="LLM vendor for extraction (and verification, "
+                             "unless --verify-provider says otherwise)")
+    parser.add_argument("--verify-provider", choices=PROVIDERS, default=None,
+                        help="different vendor for the verification pass")
     parser.add_argument("--model", default=None,
-                        help="model name (default: the project default)")
+                        help="model name (default: the provider's default)")
     args = parser.parse_args()
 
     profile = IBERIA_INVOICE
     gold = harness.load_gold()
     docs = harness.sample(gold) if args.sample else gold
-    provider = CachedProvider(AnthropicProvider(args.model), CACHE_DIR)
+    provider = CachedProvider(PROVIDERS[args.provider](args.model), CACHE_DIR)
+    verifier = provider if args.verify_provider is None else CachedProvider(
+        PROVIDERS[args.verify_provider](), CACHE_DIR)
 
     # ── cost gate: load every document, count the ones not yet cached
     documents = {g.pdf.name: load(g.pdf) for g in docs}
@@ -86,7 +99,7 @@ def main() -> int:
     for g in docs:
         result = extract(documents[g.pdf.name], profile, provider=provider)
         if args.verify:
-            result = verify(result, profile, provider=provider)
+            result = verify(result, profile, provider=verifier)
         equivalent_usd += result.cost.usd
         record = {
             "doc": g.pdf.name,
@@ -146,17 +159,25 @@ def main() -> int:
         for r in multi:
             print(f"  {r['doc']} → {r['decision']}")
 
-    print(f"\n## Cost ({provider.model}"
-          f"{', verification ON' if args.verify else ''})\n")
+    verify_note = ""
+    if args.verify:
+        verify_note = (f", verified by {verifier.model}"
+                       if verifier is not provider else ", verification ON")
+    spent = provider.spent_usd + (verifier.spent_usd
+                                  if verifier is not provider else 0.0)
+    print(f"\n## Cost ({provider.model}{verify_note})\n")
     print(f"fresh-run equivalent: ${equivalent_usd:.2f} "
           f"(${equivalent_usd / len(docs):.4f}/doc) · "
-          f"spent this run: ${provider.spent_usd:.2f} · "
+          f"spent this run: ${spent:.2f} · "
           f"cache hits: {provider.hits}")
 
+    tag = args.provider if args.verify_provider is None else (
+        f"{args.provider}-x-{args.verify_provider}")
     results_path = Path(__file__).parent / (
-        "results-verify.json" if args.verify else "results.json")
+        f"results-{tag}-verify.json" if args.verify else f"results-{tag}.json")
     results_path.write_text(json.dumps({
         "model": provider.model,
+        "verifier_model": verifier.model if args.verify else None,
         "generated": datetime.now().isoformat(timespec="seconds"),
         "sample": args.sample,
         "verify": args.verify,

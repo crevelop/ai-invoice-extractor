@@ -154,7 +154,7 @@ ai-invoice-extractor/
   extractor/           # the reusable engine (every chapter imports from here)
     engine.py          # extract(document, profile) — the generic core
     profiles.py        # DocumentProfile, Rule, GatePolicy
-    providers/         # LLMProvider interface; anthropic.py today, openai.py later
+    providers/         # LLMProvider interface; anthropic.py + openai.py
     adapters.py        # DocumentLoader: PDF, image → normalized Document (text layer / page images)
     validate.py        # rule runner, locale normalization
     verify.py          # optional prompt-chaining verification

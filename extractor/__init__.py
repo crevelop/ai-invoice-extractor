@@ -26,6 +26,7 @@ from .providers import (
     CachedProvider,
     Cost,
     LLMProvider,
+    OpenAIProvider,
     default_provider,
 )
 from .validate import Money, RuleResult, normalize_amount, run_rules
@@ -44,6 +45,7 @@ __all__ = [
     "GatePolicy",
     "LLMProvider",
     "Money",
+    "OpenAIProvider",
     "ReviewQueue",
     "Rule",
     "RuleResult",
