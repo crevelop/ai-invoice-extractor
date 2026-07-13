@@ -3,8 +3,9 @@
 Schema-driven invoice extraction: a deterministic pipeline with exactly one AI
 call, measured with evals. See [SPEC.md](SPEC.md) for the full design.
 
-**Status:** build step 5 of 9 — prompt chaining: the verification pass and
-its measured ablation (below). The schema-swap demo lands in a later step.
+**Status:** build step 6 of 9 — failure-matrix fixes, measured: field
+descriptions cut the gate error to 5.4% / 2.8% verified (tables below).
+The schema-swap demo lands in a later step.
 
 ## Walkthrough (video chapters)
 
@@ -71,7 +72,7 @@ result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
 Rules and gate are plain code, so they get plain tests:
 `uv run pytest tests/test_validation.py` (no API key needed).
 
-## Evals — with the verification ablation (build step 5)
+## Evals — measured, improved, re-measured (build step 6)
 
 Every document is scored against a verified answer key: the truth sidecars
 in [`fixtures/truth/`](fixtures/truth/), cross-checked against the rendered
@@ -86,31 +87,44 @@ verification pass:
 
 | metric | baseline | + verification |
 |---|---|---|
-| fully correct documents | 34/37 | 34/37 |
-| per-field accuracy | 95–100% | 95–100% |
+| fully correct documents | 35/37 | 35/37 |
+| per-field accuracy | 97–100% | 97–100% |
 | reject docs correctly refused | 4/4 | 4/4 |
-| **gate quality** — auto-accepted docs with any error | **3/37 (8.1%)** | **1/35 (2.9%)** |
-| cost per document | $0.0067 | $0.0081 |
+| **gate quality** — auto-accepted docs with any error | **2/37 (5.4%)** | **1/36 (2.8%)** |
+| cost per document | $0.0069 | $0.0082 |
 
-Accuracy doesn't move — the verifier flags, it never corrects — but gate
-quality does: the two vendor-confused scans that used to sail through now
-land in review with both readings attached, and nothing correct got
-flagged. That's the ablation's answer: 8.1% → 2.9% gate error for
-+$0.0014/doc.
+Accuracy doesn't move between the columns — the verifier flags, it never
+corrects — but gate quality does: what slips past one read gets caught by
+the second and lands in review with both readings attached.
+
+The eval's whole point is watching numbers move when the system changes:
+
+| gate error (auto-accepted docs with any error) | baseline | + verification |
+|---|---|---|
+| build step 4 — first measured baseline | 8.1% | — |
+| build step 5 — verification pass | 8.1% | 2.9% |
+| build step 6 — field-description fixes | 5.4% | 2.8% |
+
+Step 6 fixed the two failure classes prompts *can* fix, by sharpening field
+descriptions in [`profiles/iberia_invoice.py`](profiles/iberia_invoice.py):
+vendor/customer confusion on the German scans (the vendor is "the party
+that ISSUED the invoice — letterhead, logo, bank details", not the
+prominent customer block) and quantity markers glued onto line-item
+descriptions ("'10 Stk.' belongs in quantity").
 
 What remains, honestly:
 
-- **Vendor/customer confusion (2 scans) — now caught, not yet fixed:** the
-  model reads the prominent *customer* block as the vendor and self-reports
-  high confidence; the blind verification read disagrees on both vendor
-  fields, so a human sees it. Getting the extraction right in the first place is the
-  field-description fix in build step 6.
-- **Line-item misreads (2 docs):** one still auto-accepts with an error —
-  the remaining 2.9%. Line items aren't a critical field, so the verifier
-  never re-reads them; widening the gate is a thresholds-vs-cost decision,
-  not a code change.
+- **Single-letter scan misreads (2 docs):** on the two noisiest scans the
+  model drops a letter from the vendor's name on one ("Küchenprof") and
+  doubles a letter in a line-item description on the other ("Auflauffform").
+  Prompts can't fix pixels. The name misread is on a critical field, so
+  verification catches it → review; the line-item one isn't — it IS the
+  remaining 2.8%. Widening the critical set is a thresholds-vs-cost
+  decision, not a code change.
 - **Multi-invoice PDFs (t08, known limitation):** auto-accept with only one
-  of two invoices extracted, until the multi-invoice adapter heuristic lands.
+  of two invoices extracted, until the multi-invoice adapter heuristic
+  lands. (One of the two now trips verification by luck — the two reads
+  picked different invoices — but the fix belongs in the adapter.)
 
 ## Fixtures (SPEC §5.5 failure matrix)
 

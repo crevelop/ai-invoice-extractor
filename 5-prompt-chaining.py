@@ -18,8 +18,9 @@ profile = IBERIA_INVOICE
 
 # %% 2. The failure the gate cannot see   (1 API call, ~$0.01)
 # ------------------------------------------------------------------
-# On this scanned German invoice the model reads the prominent CUSTOMER
-# block as the vendor — and reports high confidence doing it.
+# On this noisy scan the model drops one letter from the vendor's legal
+# name — the name the ERP matches the payee on — and reports high
+# confidence doing it.
 
 scan = INVOICES / "t09-scanned-03.pdf"
 first = extract(scan, profile)
@@ -28,8 +29,8 @@ show(first)
 truth = answer_key(scan)
 print("\nthe letterhead says:", truth["vendor_name"], "·", truth["vendor_tax_id"])
 
-# Rules pass, confidence high, AUTO_ACCEPT — and the vendor is wrong.
-# Rules catch bad math, not a wrong-but-consistent reading.
+# Rules pass, confidence high, AUTO_ACCEPT — and the name is wrong.
+# Rules catch bad math; they can't catch a bad read of good math.
 
 # %% 3. Chain the second call   (1 API call, ~$0.01)
 # ------------------------------------------------------------------
@@ -58,7 +59,7 @@ print(f"read twice: {second.cost}")
 # %% 5. Does the second call pay for itself?
 # ------------------------------------------------------------------
 # Measured, not guessed: evals/run_evals.py --verify reruns all 43
-# documents — gate error drops 8.1% → 2.9% for a fifth of a cent per
+# documents — gate error drops 5.4% → 2.8% for a fifth of a cent per
 # document (table in the README).
 #
 # Next: swap one profile file, extract a different document. → chapter 6

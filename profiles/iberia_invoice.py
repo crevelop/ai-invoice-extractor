@@ -20,17 +20,25 @@ from extractor import DocumentProfile, GatePolicy, Money, Rule
 
 
 class LineItem(BaseModel):
-    description: str
+    description: str = Field(
+        description="The article text from the description column only. "
+                    "Quantities and unit counts ('10 Stk.', '5 uds.', "
+                    "'x2') belong in quantity, never in the description")
     quantity: Decimal
     unit_price: Money = Field(description="Per-unit price before tax")
     total: Money = Field(description="Line total (quantity × unit price)")
 
 
 class IberiaInvoice(BaseModel):
-    vendor_name: str = Field(description="Legal name of the issuing vendor")
+    vendor_name: str = Field(
+        description="Legal name of the party that ISSUED the invoice — "
+                    "look at the letterhead, logo and bank details. Never "
+                    "the customer/addressee (the party after 'Bill to', "
+                    "'Facturar a', 'Rechnung an')")
     vendor_tax_id: str = Field(
-        description="CIF/NIF or EU VAT number (e.g. ESB12345678), or the "
-                    "vendor's national tax id for non-EU vendors")
+        description="The ISSUER's tax id, printed with the vendor's name "
+                    "or in the letterhead/footer: CIF/NIF, EU VAT number, "
+                    "or a non-EU national tax id. Never the customer's")
     invoice_number: str = Field(description="Exactly as printed, incl. prefixes")
     issue_date: date
     due_date: date | None = Field(description="null if no due date is shown")
