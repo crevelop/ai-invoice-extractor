@@ -23,6 +23,12 @@ class Cost(BaseModel):
         return (f"{self.input_tokens} in / {self.output_tokens} out "
                 f"≈ ${self.usd:.4f}")
 
+    def __add__(self, other: "Cost") -> "Cost":
+        """Costs accumulate — a verified extraction is the sum of two calls."""
+        return Cost(input_tokens=self.input_tokens + other.input_tokens,
+                    output_tokens=self.output_tokens + other.output_tokens,
+                    usd=self.usd + other.usd)
+
 
 class LLMProvider(ABC):
     """One selected model behind two calls.

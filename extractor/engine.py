@@ -3,6 +3,9 @@
 One AI call reads the page (extract), then code takes over: Pydantic parses
 (structural validation), rules check the math (business validation), and the
 gate decides. AI in exactly one seat; everything around it is deterministic.
+
+verify=True buys one more seat: a second call re-checks the critical fields
+and adjusts their confidence — the gate still makes the decision.
 """
 
 from dataclasses import dataclass, field as dc_field
@@ -15,12 +18,13 @@ from .gate import Decision, decide
 from .profiles import Confidence, DocumentProfile
 from .providers import Cost, LLMProvider, default_provider
 from .validate import RuleResult, run_rules
+from .verify import merge_checks, verify_fields
 
 
 @dataclass
 class FieldMeta:
-    """Per-field confidence plus flags: failed rules touching the field now,
-    verifier disagreement from chapter 5 later."""
+    """Per-field confidence plus flags: failed rules touching the field,
+    verifier disagreement when verify=True."""
 
     confidence: Confidence
     flags: list[str] = dc_field(default_factory=list)
@@ -95,6 +99,8 @@ def extract[T: BaseModel](
     profile: DocumentProfile[T],
     *,
     provider: LLMProvider | None = None,
+    verify: bool = False,
+    verifier: LLMProvider | None = None,
 ) -> ExtractionResult[T]:
     doc = document if isinstance(document, Document) else load(document)
     llm = provider or default_provider()
@@ -121,6 +127,14 @@ def extract[T: BaseModel](
                 for name in rule.fields:
                     if name in field_meta:
                         field_meta[name].flags.append(f"rule:{rule.name}")
+
+    # The optional second AI call (chapter 5): re-check the critical fields,
+    # adjust their confidence — never the data. The gate reads the result.
+    if verify and data is not None and profile.gate.critical_fields:
+        readings, verify_cost = verify_fields(
+            doc, profile.gate.critical_fields, verifier or llm)
+        merge_checks(field_meta, readings, data)
+        cost = cost + verify_cost
 
     decision, reasons = decide(
         profile,

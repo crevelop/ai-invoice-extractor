@@ -3,9 +3,8 @@
 Schema-driven invoice extraction: a deterministic pipeline with exactly one AI
 call, measured with evals. See [SPEC.md](SPEC.md) for the full design.
 
-**Status:** build step 4 of 9 — gold-labelled evals with first accuracy and
-cost tables (below). Prompt chaining and the schema-swap demo land in later
-steps.
+**Status:** build step 5 of 9 — prompt chaining: the verification pass and
+its measured ablation (below). The schema-swap demo lands in a later step.
 
 ## Walkthrough (video chapters)
 
@@ -25,10 +24,13 @@ calls** — every cell that spends money says so in its title.
    call with a typed schema; prose → typed object
 4. [`4-validation.py`](4-validation.py) — deterministic rules +
    confidence gate: AUTO_ACCEPT / NEEDS_REVIEW / REJECT, review queue as JSONL
+5. [`5-prompt-chaining.py`](5-prompt-chaining.py) — a second, blind AI
+   read of the fields that move money; code compares the two readings,
+   a mismatch forces review
 
 Chapter [`7-evals.py`](7-evals.py) is also runnable already — evals get
 built early (build order ≠ chapter order) so every later change can be
-measured. Chapters 5–6 land next.
+measured. Chapter 6 lands next.
 
 ## The engine
 
@@ -55,6 +57,9 @@ result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
   swapping LLMs = one new subclass)
 - [`extractor/validate.py`](extractor/validate.py) — rule runner + locale-aware
   `Money` (accepts `1.234,56`)
+- [`extractor/verify.py`](extractor/verify.py) — the optional verification
+  pass (`extract(..., verify=True)`): a second, blind read of the critical
+  fields; deterministic comparison, flags but never corrects
 - [`extractor/gate.py`](extractor/gate.py) — rules + confidence → decision
 - [`extractor/output.py`](extractor/output.py) — `ReviewQueue`: flagged
   documents land in a JSONL file with reasons attached
@@ -64,38 +69,46 @@ result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
 Rules and gate are plain code, so they get plain tests:
 `uv run pytest tests/test_validation.py` (no API key needed).
 
-## Evals — first results (build step 4)
+## Evals — with the verification ablation (build step 5)
 
 Every document is scored against a verified answer key: the truth sidecars
 in [`fixtures/truth/`](fixtures/truth/), cross-checked against the rendered
 PDFs by [`evals/verify_gold.py`](evals/verify_gold.py). **You don't need to
 run the evals** — the results are committed here. If you change the system,
-`uv run python evals/run_evals.py` reproduces them: it prints the estimated
-cost and asks before spending, and caches every extraction so re-runs with
-unchanged prompts/model are free.
+`uv run python evals/run_evals.py` reproduces them (add `--verify` for the
+ablation row): it prints the estimated cost and asks before spending, and
+caches every extraction so re-runs with unchanged prompts/model are free.
 
-`claude-haiku-4-5` · 43 documents · $0.0067/doc:
+`claude-haiku-4-5` · 43 documents · with and without the chapter-5
+verification pass:
 
-| metric | result |
-|---|---|
-| fully correct documents | 34/37 |
-| per-field accuracy | 95–100% (weakest: vendor fields, line items) |
-| reject docs correctly refused | 4/4 |
-| **gate quality** — auto-accepted docs with any error | **3/37 (8.1%)** |
+| metric | baseline | `verify=True` |
+|---|---|---|
+| fully correct documents | 34/37 | 34/37 |
+| per-field accuracy | 95–100% | 95–100% |
+| reject docs correctly refused | 4/4 | 4/4 |
+| **gate quality** — auto-accepted docs with any error | **3/37 (8.1%)** | **1/35 (2.9%)** |
+| cost per document | $0.0067 | $0.0079 |
 
-The failures are the honest kind the failure matrix was built to catch:
+Accuracy doesn't move — the verifier flags, it never corrects — but gate
+quality does: the two vendor-confused scans that used to sail through now
+land in review with both readings attached, and nothing correct got
+flagged. That's the ablation's answer: 8.1% → 2.9% gate error for
++$0.0012/doc.
 
-- **Vendor/customer confusion (2 scans):** on the scanned German layout the
-  model reads the prominent *customer* block as the vendor — the real vendor
-  hides in the letterhead — and self-reports high confidence, so the gate
-  auto-accepts a wrong vendor. This is the target for chapter 5's
-  verification pass and a field-description fix in build step 6.
-- **Line-item misreads (2 docs):** one digital German invoice, one scan.
+What remains, honestly:
+
+- **Vendor/customer confusion (2 scans) — now caught, not yet fixed:** the
+  model reads the prominent *customer* block as the vendor and self-reports
+  high confidence; the blind verification read disagrees on the tax id, so
+  a human sees it. Getting the extraction right in the first place is the
+  field-description fix in build step 6.
+- **Line-item misreads (2 docs):** one still auto-accepts with an error —
+  the remaining 2.9%. Line items aren't a critical field, so the verifier
+  never re-reads them; widening the gate is a thresholds-vs-cost decision,
+  not a code change.
 - **Multi-invoice PDFs (t08, known limitation):** auto-accept with only one
   of two invoices extracted, until the multi-invoice adapter heuristic lands.
-
-That 8.1% gate error rate is the number the rest of the build exists to
-push down — and now it's measured, not guessed.
 
 ## Fixtures (SPEC §5.5 failure matrix)
 

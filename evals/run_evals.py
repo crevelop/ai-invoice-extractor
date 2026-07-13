@@ -9,8 +9,10 @@ Guardrails:
 - extractions cache to evals/cache/ — re-runs with unchanged prompts,
   schema and model are free; delete the directory to force fresh calls
 - --sample runs one document per template (~12 docs) for quick iteration
+- --verify runs the chapter-5 ablation: same documents, verification pass
+  on, results written to results-verify.json for the README comparison
 
-Run: uv run python evals/run_evals.py [--sample] [--yes] [--model NAME]
+Run: uv run python evals/run_evals.py [--sample] [--yes] [--verify] [--model NAME]
 """
 
 import argparse
@@ -27,8 +29,8 @@ from extractor.engine import _INSTRUCTIONS, _envelope_model  # noqa: E402
 from profiles.iberia_invoice import IBERIA_INVOICE  # noqa: E402
 
 EST_COST_PER_DOC = 0.006  # observed average with claude-haiku-4-5
+EST_VERIFY_PER_DOC = 0.003  # the second, critical-fields-only call
 CACHE_DIR = Path(__file__).parent / "cache"
-RESULTS_PATH = Path(__file__).parent / "results.json"
 
 
 def main() -> int:
@@ -37,6 +39,8 @@ def main() -> int:
                         help="one document per template (~12 docs)")
     parser.add_argument("--yes", action="store_true",
                         help="skip the cost confirmation")
+    parser.add_argument("--verify", action="store_true",
+                        help="ablation: run with the verification pass on")
     parser.add_argument("--model", default=None,
                         help="model name (default: the project default)")
     args = parser.parse_args()
@@ -53,9 +57,15 @@ def main() -> int:
     uncached = {g.pdf.name for g in docs if not provider.has_cached(
         documents[g.pdf.name], envelope, instructions)}
     estimate = len(uncached) * EST_COST_PER_DOC
-    print(f"{len(docs)} documents · {len(uncached)} need a fresh API call "
-          f"(~${estimate:.2f}) · {len(docs) - len(uncached)} from cache\n")
-    if uncached and not args.yes:
+    if args.verify:
+        # Verification calls depend on the extracted values, so their cache
+        # status is unknowable up front — estimate the worst case.
+        estimate += (sum(1 for g in docs if g.kind != "reject")
+                     * EST_VERIFY_PER_DOC)
+    print(f"{len(docs)} documents · {len(uncached)} need a fresh extraction "
+          f"· up to ~${estimate:.2f} this run"
+          f"{' (verification pass ON)' if args.verify else ''}\n")
+    if estimate and not args.yes:
         if input("proceed? [y/N] ").strip().lower() != "y":
             print("aborted — nothing spent")
             return 1
@@ -64,14 +74,12 @@ def main() -> int:
     rows = []  # per-field checks, single-invoice docs only
     records = []
     by_template: dict[str, list[dict]] = {}
-    spent_usd = 0.0
     equivalent_usd = 0.0
 
     for g in docs:
-        result = extract(documents[g.pdf.name], profile, provider=provider)
+        result = extract(documents[g.pdf.name], profile, provider=provider,
+                         verify=args.verify)
         equivalent_usd += result.cost.usd
-        if g.pdf.name in uncached:
-            spent_usd += result.cost.usd
         record = {
             "doc": g.pdf.name,
             "template": g.template,
@@ -130,19 +138,24 @@ def main() -> int:
         for r in multi:
             print(f"  {r['doc']} → {r['decision']}")
 
-    print(f"\n## Cost ({provider.model})\n")
+    print(f"\n## Cost ({provider.model}"
+          f"{', verification ON' if args.verify else ''})\n")
     print(f"fresh-run equivalent: ${equivalent_usd:.2f} "
           f"(${equivalent_usd / len(docs):.4f}/doc) · "
-          f"spent this run: ${spent_usd:.2f} · cache hits: {provider.hits}")
+          f"spent this run: ${provider.spent_usd:.2f} · "
+          f"cache hits: {provider.hits}")
 
-    RESULTS_PATH.write_text(json.dumps({
+    results_path = Path(__file__).parent / (
+        "results-verify.json" if args.verify else "results.json")
+    results_path.write_text(json.dumps({
         "model": provider.model,
         "generated": datetime.now().isoformat(timespec="seconds"),
         "sample": args.sample,
+        "verify": args.verify,
         "docs": records,
     }, indent=2))
-    print(f"\nraw results → {RESULTS_PATH.relative_to(Path.cwd())}"
-          if RESULTS_PATH.is_relative_to(Path.cwd()) else RESULTS_PATH)
+    print(f"\nraw results → {results_path.relative_to(Path.cwd())}"
+          if results_path.is_relative_to(Path.cwd()) else results_path)
     return 0
 
 

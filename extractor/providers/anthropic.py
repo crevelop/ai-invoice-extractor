@@ -54,9 +54,12 @@ class AnthropicProvider(LLMProvider):
         self, doc: Document, output_model: type[T], instructions: str
     ) -> tuple[T, Cost]:
         # The Pydantic model compiles to a JSON Schema the API enforces.
+        # temperature=0: extraction wants the model's single most likely
+        # reading, every take — variety is for prose, not for pipelines.
         response = self.client.messages.parse(
             model=self.model,
             max_tokens=self.MAX_TOKENS,
+            temperature=0,
             messages=self._messages(doc, instructions),
             output_format=output_model,
         )

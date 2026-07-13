@@ -25,6 +25,7 @@ class CachedProvider(LLMProvider):
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.hits = 0
         self.misses = 0
+        self.spent_usd = 0.0  # dollars actually sent to the API this run
 
     def has_cached(self, doc: Document, output_model: type[BaseModel],
                    instructions: str) -> bool:
@@ -70,5 +71,6 @@ class CachedProvider(LLMProvider):
 
     def _store(self, path: Path, output, cost: Cost) -> None:
         self.misses += 1
+        self.spent_usd += cost.usd
         path.write_text(json.dumps(
             {"output": output, "cost": cost.model_dump()}))

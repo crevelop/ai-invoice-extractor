@@ -28,6 +28,7 @@ from .providers import (
     default_provider,
 )
 from .validate import Money, RuleResult, normalize_amount, run_rules
+from .verify import merge_checks, verify_fields
 
 __all__ = [
     "AnthropicProvider",
@@ -49,6 +50,8 @@ __all__ = [
     "default_provider",
     "extract",
     "load",
+    "merge_checks",
     "normalize_amount",
     "run_rules",
+    "verify_fields",
 ]

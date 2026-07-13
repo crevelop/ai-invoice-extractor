@@ -3,6 +3,7 @@ pipeline logic. Paths, the API-key check, and pretty-printers live here so
 each lesson shows nothing but the concept it teaches.
 """
 
+import json
 import os
 from pathlib import Path
 
@@ -19,6 +20,13 @@ def require_api_key() -> None:
     assert os.environ.get("ANTHROPIC_API_KEY"), (
         "Missing ANTHROPIC_API_KEY — copy .env.example to .env and add your key."
     )
+
+
+def answer_key(pdf: Path) -> dict:
+    """The verified correct values for a fixture document — its truth
+    sidecar, the same answer key the evals score against."""
+    sidecar = FIXTURES / "truth" / f"{pdf.stem}.json"
+    return json.loads(sidecar.read_text())["invoices"][0]
 
 
 def sample_photo() -> Path:
