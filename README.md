@@ -11,8 +11,10 @@ in later steps.
 
 Each file runs top-to-bottom (`uv run python walkthrough/N-*.py`) and
 cell-by-cell in the VS Code interactive window — select this project's
-`.venv` as the kernel (ipykernel ships as a dev dependency). Chapters 2+
-need `ANTHROPIC_API_KEY` in `.env`.
+`.venv` as the kernel (ipykernel ships as a dev dependency). `uv sync`
+installs the repo as an editable package, so the walkthrough imports work
+from any directory with zero path setup. Chapters 2+ need
+`ANTHROPIC_API_KEY` in `.env`.
 
 1. [`1-ingestion.py`](walkthrough/1-ingestion.py) — input adapters: PDF, scan,
    and photo normalize into one `Document` shape

@@ -7,16 +7,9 @@
 # selected model (extractor/providers/); swapping LLMs is this one line.
 
 import re
-import sys
-from pathlib import Path
 
-# works as a script (__file__) and cell-by-cell in the interactive window (cwd)
-_here = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-sys.path.insert(0, str(next(p for p in [_here, *_here.parents]
-                            if (p / "extractor").is_dir())))
-
-from extractor import AnthropicProvider, load  # noqa: E402
-from walkthrough.utils import INVOICES, require_api_key  # noqa: E402
+from extractor import AnthropicProvider, load
+from walkthrough.utils import INVOICES, require_api_key
 
 require_api_key()
 llm = AnthropicProvider()  # the one line that picks the model

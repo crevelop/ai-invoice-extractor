@@ -3,18 +3,12 @@
 # it and decides. AUTO_ACCEPT / NEEDS_REVIEW / REJECT.
 
 import json
-import sys
 from dataclasses import replace
 from pathlib import Path
 
-# works as a script (__file__) and cell-by-cell in the interactive window (cwd)
-_here = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-sys.path.insert(0, str(next(p for p in [_here, *_here.parents]
-                            if (p / "extractor").is_dir())))
-
-from extractor import Decision, decide, extract, run_rules  # noqa: E402
-from profiles.iberia_invoice import IBERIA_INVOICE, duplicate_rule  # noqa: E402
-from walkthrough.utils import (  # noqa: E402
+from extractor import Decision, decide, extract, run_rules
+from profiles.iberia_invoice import IBERIA_INVOICE, duplicate_rule
+from walkthrough.utils import (
     FIXTURES, INVOICES, REJECTS, ROOT, require_api_key, show,
 )
 

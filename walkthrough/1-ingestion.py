@@ -1,21 +1,14 @@
-# %% cell 1: setup — repo root on sys.path (run this cell first)
+# %% cell 1: setup — imports (run this cell first)
 # Chapter 1 — Input adapters: a PDF is not text, and a photographed receipt
 # is not a PDF. Two very different inputs normalize into ONE Document shape,
 # and the rest of the pipeline never thinks about sources again.
 #
 # The implementation is extractor/adapters.py — keep it open alongside;
-# this step just runs it.
+# this step just runs it. (`uv sync` installs the repo editable, so these
+# imports work as a script and in the interactive window alike.)
 
-import sys
-from pathlib import Path
-
-# works as a script (__file__) and cell-by-cell in the interactive window (cwd)
-_here = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-sys.path.insert(0, str(next(p for p in [_here, *_here.parents]
-                            if (p / "extractor").is_dir())))
-
-from extractor import DocumentLoader  # noqa: E402
-from walkthrough.utils import INVOICES, sample_photo  # noqa: E402
+from extractor import DocumentLoader
+from walkthrough.utils import INVOICES, sample_photo
 
 # %% cell 2: run the adapter — three sources in, one table out
 # Three real inputs, three very different files on disk:
