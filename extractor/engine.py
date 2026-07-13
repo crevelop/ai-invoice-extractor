@@ -4,8 +4,7 @@ One AI call reads the page (extract), then code takes over: Pydantic parses
 (structural validation), rules check the math (business validation), and the
 gate decides. AI in exactly one seat; everything around it is deterministic.
 
-verify=True buys one more seat: a second call re-checks the critical fields
-and adjusts their confidence — the gate still makes the decision.
+Chapter 5 chains a second seat on top: verify(result, profile) in verify.py.
 """
 
 from dataclasses import dataclass, field as dc_field
@@ -18,13 +17,12 @@ from .gate import Decision, decide
 from .profiles import Confidence, DocumentProfile
 from .providers import Cost, LLMProvider, default_provider
 from .validate import RuleResult, run_rules
-from .verify import merge_checks, verify_fields
 
 
 @dataclass
 class FieldMeta:
     """Per-field confidence plus flags: failed rules touching the field,
-    verifier disagreement when verify=True."""
+    verifier disagreement once verify() is chained on."""
 
     confidence: Confidence
     flags: list[str] = dc_field(default_factory=list)
@@ -32,7 +30,7 @@ class FieldMeta:
 
 @dataclass
 class ExtractionResult[T: BaseModel]:
-    source: str  # which file this came from
+    document: Document  # what was read — later chain steps can re-read it
     data: T | None  # typed instance of the profile schema; None on REJECT
     document_type: str  # what the model says the page actually is
     field_meta: dict[str, FieldMeta]
@@ -40,6 +38,11 @@ class ExtractionResult[T: BaseModel]:
     cost: Cost
     decision: Decision
     reasons: list[str]  # why the gate decided what it decided
+
+    @property
+    def source(self) -> str:
+        """Which file this came from."""
+        return self.document.source
 
     @property
     def confidence(self) -> dict[str, Confidence]:
@@ -99,8 +102,6 @@ def extract[T: BaseModel](
     profile: DocumentProfile[T],
     *,
     provider: LLMProvider | None = None,
-    verify: bool = False,
-    verifier: LLMProvider | None = None,
 ) -> ExtractionResult[T]:
     doc = document if isinstance(document, Document) else load(document)
     llm = provider or default_provider()
@@ -128,14 +129,6 @@ def extract[T: BaseModel](
                     if name in field_meta:
                         field_meta[name].flags.append(f"rule:{rule.name}")
 
-    # The optional second AI call (chapter 5): re-check the critical fields,
-    # adjust their confidence — never the data. The gate reads the result.
-    if verify and data is not None and profile.gate.critical_fields:
-        readings, verify_cost = verify_fields(
-            doc, profile.gate.critical_fields, verifier or llm)
-        merge_checks(field_meta, readings, data)
-        cost = cost + verify_cost
-
     decision, reasons = decide(
         profile,
         envelope.document_type,
@@ -144,7 +137,7 @@ def extract[T: BaseModel](
         has_data=data is not None,
     )
     return ExtractionResult(
-        source=doc.source,
+        document=doc,
         data=data,
         document_type=envelope.document_type,
         field_meta=field_meta,

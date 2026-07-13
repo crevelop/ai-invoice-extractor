@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from extractor import (  # noqa: E402
     Cost,
     Decision,
+    Document,
     ExtractionResult,
     ReviewQueue,
     decide,
@@ -211,7 +212,7 @@ def test_gate_rejects_when_no_data_extracted():
 
 def flagged_result() -> ExtractionResult:
     return ExtractionResult(
-        source="doc.pdf",
+        document=Document(source="doc.pdf", kind="text", text="…"),
         data=valid_invoice(),
         document_type="invoice",
         field_meta={},

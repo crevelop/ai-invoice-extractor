@@ -24,7 +24,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from evals import harness  # noqa: E402
-from extractor import AnthropicProvider, CachedProvider, Decision, extract, load  # noqa: E402
+from extractor import (  # noqa: E402
+    AnthropicProvider,
+    CachedProvider,
+    Decision,
+    extract,
+    load,
+    verify,
+)
 from extractor.engine import _INSTRUCTIONS, _envelope_model  # noqa: E402
 from profiles.iberia_invoice import IBERIA_INVOICE  # noqa: E402
 
@@ -77,8 +84,9 @@ def main() -> int:
     equivalent_usd = 0.0
 
     for g in docs:
-        result = extract(documents[g.pdf.name], profile, provider=provider,
-                         verify=args.verify)
+        result = extract(documents[g.pdf.name], profile, provider=provider)
+        if args.verify:
+            result = verify(result, profile, provider=provider)
         equivalent_usd += result.cost.usd
         record = {
             "doc": g.pdf.name,

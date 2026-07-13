@@ -3,6 +3,7 @@
 Public surface:
 
     result = extract("invoice.pdf", profile=IBERIA_INVOICE)
+    result = verify(result, IBERIA_INVOICE)  # optional second AI read
     result.data        # typed instance of the profile's schema (None on REJECT)
     result.field_meta  # per-field confidence + flags
     result.validation  # passed/failed business rules
@@ -28,7 +29,7 @@ from .providers import (
     default_provider,
 )
 from .validate import Money, RuleResult, normalize_amount, run_rules
-from .verify import merge_checks, verify_fields
+from .verify import merge_checks, verify, verify_fields
 
 __all__ = [
     "AnthropicProvider",
@@ -53,5 +54,6 @@ __all__ = [
     "merge_checks",
     "normalize_amount",
     "run_rules",
+    "verify",
     "verify_fields",
 ]

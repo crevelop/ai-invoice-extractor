@@ -2,14 +2,14 @@
 Chapter 5 — Prompt chaining: a second opinion on the fields that move money.
 
 Chapter 4's weakness: confidence is the model grading its own homework.
-For critical fields we buy one more AI call — an independent re-read.
-It flags disagreements; it never corrects them.
+So we chain a second AI call — an independent re-read of the critical
+fields. It flags disagreements; it never corrects them.
 """
 
 # %% 1. Setup
 # ------------------------------------------------------------------
 
-from extractor import extract
+from extractor import extract, verify
 from extractor.utils import INVOICES, answer_key, require_api_key, show
 from profiles.iberia_invoice import IBERIA_INVOICE
 
@@ -31,45 +31,33 @@ print("\nthe letterhead says:", truth["vendor_name"], "·", truth["vendor_tax_id
 # Rules pass, confidence high, AUTO_ACCEPT — and the vendor is wrong.
 # Rules catch bad math, not a wrong-but-consistent reading.
 
-# %% 3. The second opinion   (2 API calls, ~$0.01)
+# %% 3. Chain the second call   (1 API call, ~$0.01)
 # ------------------------------------------------------------------
-# verify=True chains a second call: re-read ONLY the critical fields,
-# blind — no claimed values in its context, nothing to anchor on. Code
-# compares the two readings; a mismatch downgrades confidence to "low",
-# and the chapter-4 gate does the rest.
+# verify() re-reads ONLY the critical fields, blind — it never sees what
+# the first call extracted. Code compares the two readings; a mismatch
+# downgrades confidence, and the same chapter-4 gate flips to review.
 
-second = extract(scan, profile, verify=True)
+second = verify(first, profile)
 show(second)
 
-# The verifier read the letterhead (the ⚑ flag carries the real tax id).
-# Two readers disagree → that field is uncertain → a person decides.
+# Both readings on screen (the ⚑ flags), data untouched: the verifier
+# flags, it never corrects. Two readers disagree → a person decides.
 
-# %% 4. Flags, never corrects
+# %% 4. The happy path   (2 API calls, ~$0.01)
 # ------------------------------------------------------------------
-# Why not let the verifier overwrite the value? "The second model wins"
-# is a coin flip, not a policy. Agreement is evidence; disagreement is
-# uncertainty — a human's job. The document goes to review carrying BOTH
-# readings; the data is never silently edited.
-#
-# And code decides whether two readings match: models are bad at string
-# equality ('5.323,18' vs '5323.18'), Money isn't. AI reads; code judges.
-
-# %% 5. What certainty costs   (2 API calls, ~$0.01)
-# ------------------------------------------------------------------
-# On a clean invoice the verifier agrees everywhere: still AUTO_ACCEPT,
+# On a clean invoice the two reads agree everywhere: still AUTO_ACCEPT,
 # roughly double the price. That's the trade.
 
-clean = extract(INVOICES / "t01-es-clean-01.pdf", profile, verify=True)
+clean = verify(extract(INVOICES / "t01-es-clean-01.pdf", profile), profile)
 show(clean)
 
-print(f"\none call : {first.cost}")
-print(f"two calls: {second.cost}")
+print(f"\nread once : {first.cost}")
+print(f"read twice: {second.cost}")
 
-# %% 6. Does the second call pay for itself?
+# %% 5. Does the second call pay for itself?
 # ------------------------------------------------------------------
-# A business question gets a measured answer: evals/run_evals.py --verify
-# reruns all 43 documents — the README table shows gate error 8.1% → 2.9%
-# for a fifth of a cent per document.
+# Measured, not guessed: evals/run_evals.py --verify reruns all 43
+# documents — gate error drops 8.1% → 2.9% for a fifth of a cent per
+# document (table in the README).
 #
-# Next: this pipeline still says "invoice" everywhere. Or does it?
-# Swap one profile file and find out. → chapter 6
+# Next: swap one profile file, extract a different document. → chapter 6

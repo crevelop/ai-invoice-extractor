@@ -39,10 +39,11 @@ The pipeline is generic; [`profiles/`](profiles/) holds everything
 use-case-specific:
 
 ```python
-from extractor import extract
+from extractor import extract, verify
 from profiles.iberia_invoice import IBERIA_INVOICE
 
 result = extract("invoice.pdf", IBERIA_INVOICE)
+result = verify(result, IBERIA_INVOICE)  # optional second AI read (chapter 5)
 result.data        # typed IberiaInvoice instance (None on REJECT)
 result.field_meta  # per-field confidence + flags
 result.validation  # passed/failed business rules
@@ -58,8 +59,9 @@ result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
 - [`extractor/validate.py`](extractor/validate.py) — rule runner + locale-aware
   `Money` (accepts `1.234,56`)
 - [`extractor/verify.py`](extractor/verify.py) — the optional verification
-  pass (`extract(..., verify=True)`): a second, blind read of the critical
-  fields; deterministic comparison, flags but never corrects
+  step, chained after extraction (`verify(result, profile)`): a second,
+  blind read of the critical fields; deterministic comparison, flags but
+  never corrects
 - [`extractor/gate.py`](extractor/gate.py) — rules + confidence → decision
 - [`extractor/output.py`](extractor/output.py) — `ReviewQueue`: flagged
   documents land in a JSONL file with reasons attached
@@ -82,7 +84,7 @@ caches every extraction so re-runs with unchanged prompts/model are free.
 `claude-haiku-4-5` · 43 documents · with and without the chapter-5
 verification pass:
 
-| metric | baseline | `verify=True` |
+| metric | baseline | + verification |
 |---|---|---|
 | fully correct documents | 34/37 | 34/37 |
 | per-field accuracy | 95–100% | 95–100% |

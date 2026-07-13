@@ -1,26 +1,35 @@
-"""Optional verification pass: a second opinion on the fields that move money.
+"""Verification pass: a second opinion on the fields that move money.
 
-Prompt chaining in the evaluator pattern — after extraction, a second call
-re-reads ONLY the critical fields, blind: the claimed values never enter its
-context, so there is nothing to anchor on or agree with. Deterministic code
-compares the two readings. The verifier flags, it never corrects: matching
-reads raise a field's confidence, a mismatch downgrades it to "low" — and
-the gate's existing critical-field floor turns that into NEEDS_REVIEW. Two
-reads agreeing is evidence; two reads disagreeing is uncertainty, and
-uncertainty is a human's job, not a third API call's.
+Prompt chaining in the evaluator pattern — a separate step chained after
+extract(), not a flag on it:
+
+    result = verify(extract("invoice.pdf", profile), profile)
+
+The second call re-reads ONLY the critical fields, blind: the claimed
+values never enter its context, so there is nothing to anchor on or agree
+with. Deterministic code compares the two readings. The verifier flags, it
+never corrects: matching reads raise a field's confidence, a mismatch
+downgrades it to "low" — and the gate's existing critical-field floor turns
+that into NEEDS_REVIEW. Two reads agreeing is evidence; two reads
+disagreeing is uncertainty, and uncertainty is a human's job, not a third
+API call's.
 
 Cost control: only the critical fields are re-read, and the verifier can be
-a different model (pass verifier= to extract()). Here the extractor already
-runs the cheapest vision-capable tier, so the default second opinion is the
-same model on a much narrower brief.
+a different model (provider=). Here the extractor already runs the cheapest
+vision-capable tier, so the default second opinion is the same model on a
+much narrower brief.
 """
 
 import re
+from dataclasses import replace
 
 from pydantic import BaseModel, Field, ValidationError, create_model
 
 from .adapters import Document
-from .providers import Cost, LLMProvider
+from .engine import ExtractionResult, FieldMeta
+from .gate import decide
+from .profiles import DocumentProfile
+from .providers import Cost, LLMProvider, default_provider
 
 _INSTRUCTIONS = """\
 You are the verification step of an accounts-payable pipeline: a second, \
@@ -117,3 +126,35 @@ def merge_checks(field_meta: dict, readings: dict[str, str],
         else:
             meta.confidence = "low"
             meta.flags.append(f"verifier read '{reading}'")
+
+
+def verify[T: BaseModel](
+    result: ExtractionResult[T],
+    profile: DocumentProfile[T],
+    *,
+    provider: LLMProvider | None = None,
+) -> ExtractionResult[T]:
+    """The chain's second link: extraction result in, verified result out.
+
+    Re-reads the critical fields from the result's document, folds the
+    second read into the confidence metadata, and lets the same gate decide
+    again. Costs accumulate. The original result is left untouched, so the
+    two are easy to compare side by side."""
+    if result.data is None or not profile.gate.critical_fields:
+        return result  # nothing extracted or nothing critical: no-op
+
+    readings, cost = verify_fields(
+        result.document, profile.gate.critical_fields,
+        provider or default_provider())
+    field_meta = {name: FieldMeta(meta.confidence, [*meta.flags])
+                  for name, meta in result.field_meta.items()}
+    merge_checks(field_meta, readings, result.data)
+
+    decision, reasons = decide(
+        profile,
+        result.document_type,
+        {name: meta.confidence for name, meta in field_meta.items()},
+        result.validation,
+    )
+    return replace(result, field_meta=field_meta, cost=result.cost + cost,
+                   decision=decision, reasons=reasons)

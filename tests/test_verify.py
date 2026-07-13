@@ -13,9 +13,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from extractor import (  # noqa: E402
     Cost,
     Decision,
+    Document,
+    ExtractionResult,
     FieldMeta,
     decide,
     merge_checks,
+    verify,
 )
 from profiles.iberia_invoice import (  # noqa: E402
     IBERIA_INVOICE,
@@ -116,6 +119,22 @@ def test_mismatch_forces_needs_review_through_the_gate():
     decision, reasons = decide(IBERIA_INVOICE, "invoice", confidence, [])
     assert decision is Decision.NEEDS_REVIEW
     assert "critical field 'vendor_tax_id' has low confidence" in reasons
+
+
+def test_verify_is_a_no_op_on_rejected_results():
+    # Nothing was extracted, so there is nothing to re-read — verify()
+    # returns the result as-is without spending an API call.
+    rejected = ExtractionResult(
+        document=Document(source="quote.pdf", kind="text", text="…"),
+        data=None,
+        document_type="quote",
+        field_meta={},
+        validation=[],
+        cost=Cost(input_tokens=1, output_tokens=1, usd=0.0),
+        decision=Decision.REJECT,
+        reasons=["document looks like 'quote', expected 'invoice'"],
+    )
+    assert verify(rejected, IBERIA_INVOICE) is rejected
 
 
 def test_costs_add_up_across_the_two_calls():
