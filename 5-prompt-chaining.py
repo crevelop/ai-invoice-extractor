@@ -48,7 +48,8 @@ show(second)
 # On a clean invoice the two reads agree everywhere: still AUTO_ACCEPT,
 # roughly double the price. That's the trade.
 
-clean = verify(extract(INVOICES / "t01-es-clean-01.pdf", profile), profile)
+clean = extract(INVOICES / "t01-es-clean-01.pdf", profile)
+clean = verify(clean, profile)
 show(clean)
 
 print(f"\nread once : {first.cost}")

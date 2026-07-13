@@ -3,7 +3,8 @@
 Prompt chaining in the evaluator pattern — a separate step chained after
 extract(), not a flag on it:
 
-    result = verify(extract("invoice.pdf", profile), profile)
+    result = extract("invoice.pdf", profile)
+    result = verify(result, profile)
 
 The second call re-reads ONLY the critical fields, blind: the claimed
 values never enter its context, so there is nothing to anchor on or agree
