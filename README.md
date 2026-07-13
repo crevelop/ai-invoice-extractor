@@ -117,29 +117,37 @@ descriptions ("'10 Stk.' belongs in quantity").
 
 ### Model tiers, measured (build step 7)
 
-Same 43 documents, same engine — only the provider argument changes:
+Same 43 documents, same engine — only the provider argument changes.
+`gpt-5.4-mini` is OpenAI's small tier as of July 2026, the fair peer to
+Haiku 4.5; `gpt-4o-mini` (2024) stays in the table as the budget floor:
 
 | configuration | fully correct | gate error | reviews (false alarms) | $/doc |
 |---|---|---|---|---|
 | `claude-haiku-4-5` | 35/37 | 5.4% | 0 | $0.0074 |
-| `claude-haiku-4-5` + verification | 35/37 | **2.8%** | 1 (0) | $0.0088 |
-| `claude-haiku-4-5`, `gpt-4o-mini` as verifier | 35/37 | 3.2% | 6 (5) | $0.0080 |
-| `gpt-4o-mini` | 24/37 | 27.3% | 4 (0) | $0.0011 |
-| `gpt-4o-mini` + verification | 24/37 | 8.7% | 14 (3) | $0.0017 |
+| — + same-model verification | 35/37 | **2.8%** | 1 (0) | $0.0088 |
+| — + `gpt-5.4-mini` as verifier | 35/37 | **2.8%** | 1 (0) | $0.0083 |
+| `gpt-5.4-mini` | 28/37 | 24.3% | 0 | $0.0036 |
+| — + same-model verification | 28/37 | 24.3% | 0 | $0.0045 |
+| `gpt-4o-mini` (budget floor) | 24/37 | 27.3% | 4 (0) | $0.0011 |
+| — + same-model verification | 24/37 | 8.7% | 14 (3) | $0.0017 |
 
-Two findings the table buys:
+Three findings the table buys:
 
-- **The cheap tier is a false economy here.** `gpt-4o-mini` is ~7× cheaper
-  per call and gets 24/37 documents fully right; even with verification its
-  gate error is 3× worse *while* sending 14 of 37 invoices to a human. The
-  clerk's time is the expensive resource this system exists to save — the
-  extra $0.007/doc for the stronger reader is the cheapest line item on
-  this page.
-- **A second opinion is only worth having from a reader at least as good.**
-  Using `gpt-4o-mini` to verify `claude-haiku-4-5` (the `--verify-provider`
-  row) was a *worse* witness than the same model re-reading blind: five
-  false alarms and it missed the one-letter vendor misread the same-model
-  verifier catches.
+- **Model choice dominates everything else on this page.** The peer-tier
+  `gpt-5.4-mini` costs half as much and gets 9 more documents wrong — and
+  auto-accepts every one of them, because it never doubts itself. Every
+  wrong auto-post lands in the ERP. The extra $0.004/doc for the stronger
+  reader is the cheapest line item in the system.
+- **Self-verification is worth exactly as much as the model's self-variance.**
+  Haiku checking itself halves its gate error; `gpt-5.4-mini` checking
+  itself catches *zero* of its nine errors — a highly self-consistent
+  model re-reads its way into the same mistakes, so the second call buys
+  the same opinion twice.
+- **A cross-provider verifier works when it's a peer.** `gpt-5.4-mini`
+  verifying Haiku matches same-model verification exactly (2.8%, no false
+  alarms, marginally cheaper) — two different models agreeing is the
+  strongest evidence on this page. The 2024 budget model in the same seat
+  was a *worse* witness: five false alarms and it missed the real error.
 
 Swapping providers also surfaced two vendor quirks, both absorbed at the
 validation boundary without touching the engine: `gpt-4o-mini` reports the

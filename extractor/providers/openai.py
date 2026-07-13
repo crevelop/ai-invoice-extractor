@@ -20,10 +20,11 @@ from .base import Cost, LLMProvider
 class OpenAIProvider(LLMProvider):
     name = "openai"
 
-    # Cheapest vision-capable OpenAI model with structured outputs.
-    DEFAULT_MODEL = "gpt-4o-mini"
+    # OpenAI's small tier as of July 2026 — the fair peer to Haiku 4.5.
+    DEFAULT_MODEL = "gpt-5.4-mini"
     PRICING = {  # $ per 1M tokens: (input, output) — add a row per model tried
-        "gpt-4o-mini": (0.15, 0.60),
+        "gpt-5.4-mini": (0.75, 4.50),
+        "gpt-4o-mini": (0.15, 0.60),  # two generations older; the budget floor
     }
     MAX_TOKENS = 8192  # dense invoices carry many line items; billed per token used
 
@@ -46,8 +47,8 @@ class OpenAIProvider(LLMProvider):
         response = self.client.chat.completions.create(
             model=self.model,
             max_completion_tokens=self.MAX_TOKENS,
-            temperature=0,
             messages=self._messages(doc, instructions),
+            **self._sampling(),
         )
         return response.choices[0].message.content, self._cost(response.usage)
 
@@ -59,11 +60,17 @@ class OpenAIProvider(LLMProvider):
         response = self.client.chat.completions.parse(
             model=self.model,
             max_completion_tokens=self.MAX_TOKENS,
-            temperature=0,
             messages=self._messages(doc, instructions),
             response_format=output_model,
+            **self._sampling(),
         )
         return response.choices[0].message.parsed, self._cost(response.usage)
+
+    def _sampling(self) -> dict:
+        """Reasoning-tier models (gpt-5*) fix temperature at the default and
+        reject the parameter; everything older gets the extraction-friendly
+        temperature=0 (the single most likely reading, every take)."""
+        return {} if self.model.startswith("gpt-5") else {"temperature": 0}
 
     def _messages(self, doc: Document, instructions: str) -> list[dict]:
         """Chapter-1 payoff again: the provider only asks 'text or images?'."""
