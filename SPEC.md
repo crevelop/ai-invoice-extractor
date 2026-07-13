@@ -120,7 +120,7 @@ class IberiaInvoice(BaseModel):
 
 ## 5. Eval harness (the senior signal)
 
-1. **Corpus:** 30–50 synthetic invoices generated as HTML → PDF across ~10 layout templates, covering the failure matrix below, plus a handful of real public-domain samples if available. Committed to `fixtures/`.
+1. **Corpus:** 30–50 synthetic invoices generated as HTML → PDF across ~10 layout templates, covering the failure matrix below, plus a handful of real public-domain samples if available. Committed to `fixtures/`. Size rationale (built: 43 docs / 41 records): 41 records × 12 fields ≈ 490 field comparisons keeps the headline table stable (one error ≈ 0.2%), with 3+ docs per failure-matrix cell — bigger buys little, smaller makes gate quality anecdotal. Cost control lives in the runner, not the corpus: extractions cache to disk, so only changed prompts/schema/model re-pay.
 2. **Gold labels:** hand-verified JSON per document. Yes, by hand — this is the Stage 4 warm-up.
 3. **Metrics (per field):** exact-match accuracy for ids/dates/amounts, normalized match for names; plus document-level "fully correct" rate; plus **gate quality**: of AUTO_ACCEPTed docs, how many had any error (the metric a CFO actually cares about).
 4. **Cost table:** $/document by model tier (e.g., Haiku-class vs Sonnet-class vs GPT-4o-mini-class), accuracy vs. cost trade-off.
@@ -165,8 +165,10 @@ ai-invoice-extractor/
     iberia_invoice.py
     delivery_note.py   # the swap demo
   evals/
-    goldset/           # doc → hand-verified answer key
+    harness.py         # gold loading, field comparison, accuracy aggregation
+    verify_gold.py     # spot-check truth sidecars against the rendered PDFs (no API)
     run_evals.py       # full matrix: all docs, providers, ablations → the README tables
+                       # gold set = fixtures/truth (true by construction, verified)
   fixtures/            # synthetic PDFs + photo receipt + generator script
   README.md            # mermaid pipeline diagram + the tables + chapter index
 ```

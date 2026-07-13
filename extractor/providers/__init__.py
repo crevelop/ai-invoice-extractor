@@ -6,6 +6,7 @@ compare providers without touching the engine or the walkthrough.
 
 from .anthropic import AnthropicProvider
 from .base import Cost, LLMProvider
+from .cache import CachedProvider
 
 _default: LLMProvider | None = None
 
@@ -19,4 +20,5 @@ def default_provider() -> LLMProvider:
     return _default
 
 
-__all__ = ["AnthropicProvider", "Cost", "LLMProvider", "default_provider"]
+__all__ = ["AnthropicProvider", "CachedProvider", "Cost", "LLMProvider",
+           "default_provider"]

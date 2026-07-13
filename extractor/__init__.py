@@ -20,11 +20,18 @@ from .engine import ExtractionResult, FieldMeta, extract
 from .gate import Decision, decide
 from .output import ReviewQueue
 from .profiles import DocumentProfile, GatePolicy, Rule
-from .providers import AnthropicProvider, Cost, LLMProvider, default_provider
+from .providers import (
+    AnthropicProvider,
+    CachedProvider,
+    Cost,
+    LLMProvider,
+    default_provider,
+)
 from .validate import Money, RuleResult, normalize_amount, run_rules
 
 __all__ = [
     "AnthropicProvider",
+    "CachedProvider",
     "Cost",
     "Decision",
     "Document",

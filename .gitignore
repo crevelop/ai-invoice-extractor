@@ -13,3 +13,7 @@ review_queue.jsonl
 
 # OS
 .DS_Store
+
+# Eval artifacts (results are committed to the README instead)
+evals/cache/
+evals/results.json

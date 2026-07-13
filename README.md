@@ -3,9 +3,9 @@
 Schema-driven invoice extraction: a deterministic pipeline with exactly one AI
 call, measured with evals. See [SPEC.md](SPEC.md) for the full design.
 
-**Status:** build step 3 of 9 — the `extractor/` engine + validation/gating
-(chapter 4). Gold-label evals, prompt chaining, and the schema-swap demo land
-in later steps.
+**Status:** build step 4 of 9 — gold-labelled evals with first accuracy and
+cost tables (below). Prompt chaining and the schema-swap demo land in later
+steps.
 
 ## Walkthrough (video chapters)
 
@@ -14,7 +14,8 @@ package they import — so they run with zero path configuration. Each file
 runs top-to-bottom (`uv run python 1-ingestion.py`) and cell-by-cell in the
 VS Code interactive window — select this project's `.venv` as the kernel
 (ipykernel ships as a dev dependency). Chapters 2+ need `ANTHROPIC_API_KEY`
-in `.env`.
+in `.env`. **Following the whole walkthrough costs well under $0.25 in API
+calls** — every cell that spends money says so in its title.
 
 1. [`1-ingestion.py`](1-ingestion.py) — input adapters: PDF, scan,
    and photo normalize into one `Document` shape
@@ -24,6 +25,10 @@ in `.env`.
    call with a typed schema; prose → typed object
 4. [`4-validation.py`](4-validation.py) — deterministic rules +
    confidence gate: AUTO_ACCEPT / NEEDS_REVIEW / REJECT, review queue as JSONL
+
+Chapter [`7-evals.py`](7-evals.py) is also runnable already — evals get
+built early (build order ≠ chapter order) so every later change can be
+measured. Chapters 5–6 land next.
 
 ## The engine
 
@@ -59,10 +64,47 @@ result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
 Rules and gate are plain code, so they get plain tests:
 `uv run pytest tests/test_validation.py` (no API key needed).
 
+## Evals — first results (build step 4)
+
+Every document is scored against a verified answer key: the truth sidecars
+in [`fixtures/truth/`](fixtures/truth/), cross-checked against the rendered
+PDFs by [`evals/verify_gold.py`](evals/verify_gold.py). **You don't need to
+run the evals** — the results are committed here. If you change the system,
+`uv run python evals/run_evals.py` reproduces them: it prints the estimated
+cost and asks before spending, and caches every extraction so re-runs with
+unchanged prompts/model are free.
+
+`claude-haiku-4-5` · 43 documents · $0.0067/doc:
+
+| metric | result |
+|---|---|
+| fully correct documents | 34/37 |
+| per-field accuracy | 95–100% (weakest: vendor fields, line items) |
+| reject docs correctly refused | 4/4 |
+| **gate quality** — auto-accepted docs with any error | **3/37 (8.1%)** |
+
+The failures are the honest kind the failure matrix was built to catch:
+
+- **Vendor/customer confusion (2 scans):** on the scanned German layout the
+  model reads the prominent *customer* block as the vendor — the real vendor
+  hides in the letterhead — and self-reports high confidence, so the gate
+  auto-accepts a wrong vendor. This is the target for chapter 5's
+  verification pass and a field-description fix in build step 6.
+- **Line-item misreads (2 docs):** one digital German invoice, one scan.
+- **Multi-invoice PDFs (t08, known limitation):** auto-accept with only one
+  of two invoices extracted, until the multi-invoice adapter heuristic lands.
+
+That 8.1% gate error rate is the number the rest of the build exists to
+push down — and now it's measured, not guessed.
+
 ## Fixtures (SPEC §5.5 failure matrix)
 
 43 synthetic PDFs (41 invoice records + 4 reject docs) across 12 layout
-templates, generated as HTML → PDF with truth sidecars:
+templates, generated as HTML → PDF with truth sidecars. The size is set by
+the eval: 41 records × 12 fields ≈ 490 field comparisons keeps the headline
+accuracy table stable (one error ≈ 0.2%), with 3+ documents per
+failure-matrix row — bigger buys little, smaller makes gate quality
+anecdotal.
 
 ```
 uv run python fixtures/generate.py   # regenerate (deterministic, seed 20260711)
