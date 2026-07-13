@@ -13,7 +13,7 @@ right up until you try to use it in code.
 import re
 
 from extractor import AnthropicProvider, load
-from extractor.utils import INVOICES, require_api_key
+from extractor.utils import INVOICES, require_api_key, show_answer
 
 require_api_key()
 llm = AnthropicProvider()
@@ -28,7 +28,7 @@ INSTRUCTIONS = ("Extract the vendor name, invoice number, issue date "
 invoice_1 = load(INVOICES / "t01-es-clean-01.pdf")
 answer_1, cost_1 = llm.generate_text(invoice_1, INSTRUCTIONS)
 
-print(answer_1)
+show_answer(answer_1)  # renders the markdown, like a chat app would
 print("\ncost:", cost_1)
 
 # %% 3. Same instruction, German invoice   (1 API call)
@@ -37,13 +37,13 @@ print("\ncost:", cost_1)
 invoice_2 = load(INVOICES / "t04-de-reverse-01.pdf")
 answer_2, cost_2 = llm.generate_text(invoice_2, INSTRUCTIONS)
 
-print(answer_2)
+show_answer(answer_2)
 print("\ncost:", cost_2)
 
 # %% 4. Now try to USE those answers in code   (no API call)
 # ------------------------------------------------------------------
-# Two perfect answers — in two different shapes. Pull the total out of
-# each one and turn it into a number:
+# The rendering above was for OUR eyes. Code receives the raw characters —
+# headers, asterisks and all. Pull the total out and turn it into a number:
 
 for name, answer in [("invoice 1", answer_1), ("invoice 2", answer_2)]:
     found = re.search(r"[Tt]otal[^\d]*([\d.,]+)", answer)

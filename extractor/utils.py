@@ -29,6 +29,25 @@ def sample_photo() -> Path:
     return next((p for p in photos if "placeholder" not in p.name), photos[0])
 
 
+def show_answer(text: str) -> None:
+    """Print a model answer. In the VS Code interactive window it renders
+    as formatted markdown (the way a chat app would show it); running as a
+    plain script it prints the raw text, asterisks and all."""
+    try:
+        import IPython
+
+        shell = IPython.get_ipython()
+        # ZMQInteractiveShell = a Jupyter kernel (the interactive window)
+        if shell is not None and type(shell).__name__ == "ZMQInteractiveShell":
+            from IPython.display import Markdown, display
+
+            display(Markdown(text))
+            return
+    except ImportError:
+        pass
+    print(text)
+
+
 def show(result) -> None:
     """One ExtractionResult, one screen: decision, checks, fields, cost."""
     print(f"decision: {result.decision}   [{result.cost}]")
