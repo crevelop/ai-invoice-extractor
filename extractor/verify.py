@@ -15,6 +15,8 @@ runs the cheapest vision-capable tier, so the default second opinion is the
 same model on a much narrower brief.
 """
 
+import re
+
 from pydantic import BaseModel, Field, ValidationError, create_model
 
 from .adapters import Document
@@ -25,6 +27,11 @@ You are the verification step of an accounts-payable pipeline: a second, \
 independent reading of the fields that matter most. Report each requested \
 field exactly as the document shows it — your reading is compared against \
 another reader's to catch mistakes.
+
+Business documents name several parties. Attribute each field to the right \
+one: fields about the document's issuer (vendor, supplier, seller) must be \
+read from the party who ISSUED the document — letterhead, logo, stamp, bank \
+details — never from the customer, recipient or addressee.
 
 Formats: dates as YYYY-MM-DD; amounts with a decimal point and no thousands \
 separators.\
@@ -57,7 +64,13 @@ def verify_fields(
 ) -> tuple[dict[str, str], Cost]:
     """The second AI call: document in, the verifier's own reading of each
     critical field out. It never sees what the first call extracted —
-    by design, this function cannot even be handed the claims."""
+    by design, this function cannot even be handed the claims.
+
+    Fields are read in the given order, and order matters: values generate
+    one after another, so an early unambiguous field anchors the later
+    ones. Put distinctive identifiers (a tax id) before ambiguous prose
+    (a company name) — measured on the vendor/customer-confusion scans,
+    name-first made the verifier repeat the extractor's mistake."""
     readings, cost = provider.extract_structured(
         doc, _readings_model(fields), _INSTRUCTIONS)
     return {name: getattr(readings, name) for name in fields}, cost
@@ -74,7 +87,16 @@ def _same_value(data: BaseModel, name: str, reading: str) -> bool:
             {**data.model_dump(), name: reading})
     except ValidationError:
         return False
-    return getattr(patched, name) == getattr(data, name)
+    got, want = getattr(patched, name), getattr(data, name)
+    if isinstance(want, str):
+        # Text fields (names, ids) compare like values, not bytes: casing,
+        # punctuation and spacing are typography, not disagreement.
+        return _normalize(got) == _normalize(want)
+    return got == want
+
+
+def _normalize(text: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", text.lower())
 
 
 def merge_checks(field_meta: dict, readings: dict[str, str],

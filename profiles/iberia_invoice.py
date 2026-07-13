@@ -139,8 +139,12 @@ IBERIA_INVOICE = DocumentProfile(
     document_type="invoice",
     rules=RULES,
     gate=GatePolicy(
-        # The fields a wrong value actually costs money on.
-        critical_fields=("total", "vendor_tax_id", "invoice_number"),
+        # The fields a wrong value actually costs money on: who gets paid,
+        # and how much. Order matters — the verifier re-reads them in this
+        # order, and the tax id's distinctive format pins down WHICH party
+        # is the vendor before the more ambiguous name is read.
+        critical_fields=("total", "invoice_number",
+                         "vendor_tax_id", "vendor_name"),
         min_critical_confidence="medium",  # "low" on any of them -> review
     ),
 )

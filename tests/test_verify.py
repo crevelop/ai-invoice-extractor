@@ -78,6 +78,23 @@ def test_format_differences_are_not_disagreements():
     assert meta["total"].flags == []
 
 
+def test_typography_differences_in_names_are_not_disagreements():
+    # Same vendor, different typography — casing and punctuation are not
+    # a second opinion.
+    meta = meta_for_critical_fields("medium")
+    merge_checks(meta, {"vendor_name": "COCINAS DEL EBRO SL"}, valid_invoice())
+    assert meta["vendor_name"].confidence == "high"
+    assert meta["vendor_name"].flags == []
+
+
+def test_a_different_name_is_a_disagreement():
+    meta = meta_for_critical_fields("high")
+    merge_checks(meta, {"vendor_name": "Iberia Home Goods, S.L."},
+                 valid_invoice())
+    assert meta["vendor_name"].confidence == "low"
+    assert meta["vendor_name"].flags == ["verifier read 'Iberia Home Goods, S.L.'"]
+
+
 def test_unparseable_reading_stays_a_disagreement():
     meta = meta_for_critical_fields("high")
     merge_checks(meta, {"total": "illegible"}, valid_invoice())

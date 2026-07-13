@@ -72,7 +72,7 @@ Deterministic (code): adapters, validate, gate, output, evals. AI: the single ex
 ### Confidence: two implemented mechanisms + one discussed
 
 - **Self-reported (default, always on)** — the schema includes per-field confidence the model fills in. Cheap, zero extra calls, but models are poorly calibrated; treat as a heuristic.
-- **Verification pass (implemented, optional flag)** — `extract(..., verify=True)`. A prompt-chaining step in the evaluator pattern: after extraction, a second call re-reads the **critical fields only** (total, tax id, invoice number) **blind** — the claimed values never enter its context, so there is nothing to anchor on — and deterministic code compares the two readings through the schema's own types (found empirically: showing the verifier the claims made it agree with wrong values on the exact documents it exists to catch, and models judge string equality badly — `5.323,18` vs `5323.18`).
+- **Verification pass (implemented, optional flag)** — `extract(..., verify=True)`. A prompt-chaining step in the evaluator pattern: after extraction, a second call re-reads the **critical fields only** (total, invoice number, tax id, vendor name) **blind** — the claimed values never enter its context, so there is nothing to anchor on — and deterministic code compares the two readings through the schema's own types (found empirically: showing the verifier the claims made it agree with wrong values on the exact documents it exists to catch, and models judge string equality badly — `5.323,18` vs `5323.18`). Field order in the readings matters and is set by the profile: values generate sequentially, so the tax id's distinctive format is read before the ambiguous vendor name — name-first made the verifier pick the same wrong party as the extractor.
   - **Design rule: the verifier flags, it never silently corrects.** Matching reads raise field confidence; a mismatch downgrades it and forces NEEDS_REVIEW. Two reads agreeing is evidence; two reads disagreeing is uncertainty — a human decides, not a third LLM call.
   - Cost control: critical fields only, and the verifier can be a different/cheaper model (`verifier=` argument); the default reuses the extraction tier, which is already the cheapest vision-capable model.
   - Measured, not assumed: the eval table carries a with/without-verification ablation (gate quality vs. $/doc) so the second call justifies itself with numbers.
@@ -112,7 +112,7 @@ class IberiaInvoice(BaseModel):
 
 **Business rules for this profile:** sum(line totals) == subtotal (±0.01 tolerance); subtotal + tax_amount == total; tax_amount == subtotal × tax_rate when not reverse_charge; if reverse_charge then tax_amount == 0; vendor_tax_id matches CIF/NIF/EU-VAT regex; (vendor_tax_id, invoice_number) not already seen; European decimal normalization on all amounts.
 
-**Gate policy:** all rules pass + no low-confidence critical field (total, tax_id, invoice_number) → AUTO_ACCEPT; any rule failure or low-confidence critical field → NEEDS_REVIEW; document-type check says "not an invoice" → REJECT.
+**Gate policy:** all rules pass + no low-confidence critical field (total, invoice_number, tax_id, vendor_name) → AUTO_ACCEPT; any rule failure or low-confidence critical field → NEEDS_REVIEW; document-type check says "not an invoice" → REJECT.
 
 **Narrative outcome for the video:** clerk goes from retyping 800 invoices to reviewing the ~100–150 the gate flags. LLM cost at ~$0.02/invoice ≈ $16/month vs ~160 hours of data entry. Do this math on screen.
 

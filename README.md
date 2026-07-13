@@ -88,20 +88,20 @@ verification pass:
 | per-field accuracy | 95–100% | 95–100% |
 | reject docs correctly refused | 4/4 | 4/4 |
 | **gate quality** — auto-accepted docs with any error | **3/37 (8.1%)** | **1/35 (2.9%)** |
-| cost per document | $0.0067 | $0.0079 |
+| cost per document | $0.0067 | $0.0081 |
 
 Accuracy doesn't move — the verifier flags, it never corrects — but gate
 quality does: the two vendor-confused scans that used to sail through now
 land in review with both readings attached, and nothing correct got
 flagged. That's the ablation's answer: 8.1% → 2.9% gate error for
-+$0.0012/doc.
++$0.0014/doc.
 
 What remains, honestly:
 
 - **Vendor/customer confusion (2 scans) — now caught, not yet fixed:** the
   model reads the prominent *customer* block as the vendor and self-reports
-  high confidence; the blind verification read disagrees on the tax id, so
-  a human sees it. Getting the extraction right in the first place is the
+  high confidence; the blind verification read disagrees on both vendor
+  fields, so a human sees it. Getting the extraction right in the first place is the
   field-description fix in build step 6.
 - **Line-item misreads (2 docs):** one still auto-accepts with an error —
   the remaining 2.9%. Line items aren't a critical field, so the verifier
