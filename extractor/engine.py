@@ -9,8 +9,9 @@ Chapter 5 chains a second seat on top: verify(result, profile) in verify.py.
 
 from dataclasses import dataclass, field as dc_field
 from pathlib import Path
+from typing import Annotated
 
-from pydantic import BaseModel, Field, create_model
+from pydantic import BaseModel, BeforeValidator, Field, create_model
 
 from .adapters import Document, load
 from .gate import Decision, decide
@@ -69,6 +70,20 @@ For every extracted field report your confidence:
 - "low" — obscured, overwritten by hand, cut off, or partly guessed\
 """
 
+def _null_string_to_none(value: object) -> object:
+    """Measured provider quirk: gpt-4o-mini reports the STRING 'null' for a
+    not-applicable confidence, even in strict schema mode. Boundary rule:
+    normalize the quirk in code, don't let it crash the parse."""
+    if isinstance(value, str) and value.strip().lower() in ("null", "none", ""):
+        return None
+    return value
+
+
+# What the confidence report may say per field: a level, or null when the
+# extracted field itself is null.
+ReportedConfidence = Annotated[Confidence | None,
+                               BeforeValidator(_null_string_to_none)]
+
 # One envelope model per profile schema, built once and cached.
 _envelopes: dict[tuple[type[BaseModel], str], type[BaseModel]] = {}
 
@@ -80,7 +95,10 @@ def _envelope_model(profile: DocumentProfile) -> type[BaseModel]:
     if key not in _envelopes:
         confidence_model = create_model(
             f"{profile.schema.__name__}Confidence",
-            **{name: (Confidence, ...) for name in profile.schema.model_fields},
+            **{name: (ReportedConfidence, Field(
+                description="null only when the extracted field itself "
+                            "is null"))
+               for name in profile.schema.model_fields},
         )
         _envelopes[key] = create_model(
             f"{profile.schema.__name__}Extraction",
@@ -120,7 +138,8 @@ def extract[T: BaseModel](
     if data is not None:
         reported = (envelope.field_confidence.model_dump()
                     if envelope.field_confidence else {})
-        field_meta = {name: FieldMeta(confidence=reported.get(name, "low"))
+        # A missing or null confidence counts as "low" — never as trust.
+        field_meta = {name: FieldMeta(confidence=reported.get(name) or "low")
                       for name in profile.schema.model_fields}
         validation = run_rules(data, profile.rules)
         for rule, result in zip(profile.rules, validation):

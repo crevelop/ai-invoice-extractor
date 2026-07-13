@@ -29,7 +29,7 @@ from .providers import (
     OpenAIProvider,
     default_provider,
 )
-from .validate import Money, RuleResult, normalize_amount, run_rules
+from .validate import Money, Numeric, RuleResult, normalize_amount, run_rules
 from .verify import merge_checks, verify, verify_fields
 
 __all__ = [
@@ -45,6 +45,7 @@ __all__ = [
     "GatePolicy",
     "LLMProvider",
     "Money",
+    "Numeric",
     "OpenAIProvider",
     "ReviewQueue",
     "Rule",

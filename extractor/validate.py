@@ -15,8 +15,9 @@ from .profiles import Rule
 
 
 def normalize_amount(value: object) -> object:
-    """Locale-aware amount cleanup: '1.234,56', '1,234.56', '€ 1 234,56'
-    all become '1234.56'. Non-strings pass through untouched."""
+    """Locale-aware numeric cleanup: '1.234,56', '1,234.56', '€ 1 234,56'
+    all become '1234.56' — and unit markers ('4 Stk.', '12 uds')
+    fall away too. Non-strings pass through untouched."""
     if not isinstance(value, str):
         return value
     s = re.sub(r"[^\d,.\-]", "", value)  # strip currency symbols and spaces
@@ -34,8 +35,11 @@ def normalize_amount(value: object) -> object:
     return s
 
 
-# Money in a schema = Decimal that also accepts European-formatted strings.
-Money = Annotated[Decimal, BeforeValidator(normalize_amount)]
+# A Decimal that accepts numbers the way documents print them: European
+# decimals, currency symbols, unit markers. Money is the name schemas use
+# for amounts; Numeric fits counts like a quantity column's '4 Stk.'.
+Numeric = Annotated[Decimal, BeforeValidator(normalize_amount)]
+Money = Numeric
 
 
 @dataclass(frozen=True)

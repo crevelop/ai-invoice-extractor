@@ -13,7 +13,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from extractor import DocumentProfile, GatePolicy, Money, Rule
+from extractor import DocumentProfile, GatePolicy, Money, Numeric, Rule
 
 # ── Schema: what to extract. Field descriptions double as extraction
 #    instructions — prompt engineering living inside the type definition.
@@ -24,7 +24,7 @@ class LineItem(BaseModel):
         description="The article text from the description column only. "
                     "Quantities and unit counts ('10 Stk.', '5 uds.', "
                     "'x2') belong in quantity, never in the description")
-    quantity: Decimal
+    quantity: Numeric
     unit_price: Money = Field(description="Per-unit price before tax")
     total: Money = Field(description="Line total (quantity × unit price)")
 

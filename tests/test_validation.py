@@ -87,6 +87,13 @@ def test_money_field_accepts_european_string():
     assert li.total == Decimal("1234.56")
 
 
+def test_quantity_accepts_unit_markers():
+    # gpt-4o-mini copies the printed column verbatim: '4 Stk.' is a 4.
+    li = LineItem(description="x", quantity="4 Stk.",
+                  unit_price="1.00", total="4.00")
+    assert li.quantity == Decimal("4")
+
+
 # ── the Iberia business rules
 
 

@@ -3,9 +3,9 @@
 Schema-driven invoice extraction: a deterministic pipeline with exactly one AI
 call, measured with evals. See [SPEC.md](SPEC.md) for the full design.
 
-**Status:** build step 6 of 9 — failure-matrix fixes, measured: field
-descriptions cut the gate error to 5.4% / 2.8% verified (tables below).
-The schema-swap demo lands in a later step.
+**Status:** build step 7 of 9 — second provider: `OpenAIProvider` behind
+the same interface, and the model-tier comparison is measured (tables
+below). The schema-swap demo lands next.
 
 ## Walkthrough (video chapters)
 
@@ -73,7 +73,7 @@ result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
 Rules and gate are plain code, so they get plain tests:
 `uv run pytest tests/test_validation.py` (no API key needed).
 
-## Evals — measured, improved, re-measured (build step 6)
+## Evals — measured, improved, re-measured (build steps 4–7)
 
 Every document is scored against a verified answer key: the truth sidecars
 in [`fixtures/truth/`](fixtures/truth/), cross-checked against the rendered
@@ -94,7 +94,7 @@ verification pass:
 | per-field accuracy | 97–100% | 97–100% |
 | reject docs correctly refused | 4/4 | 4/4 |
 | **gate quality** — auto-accepted docs with any error | **2/37 (5.4%)** | **1/36 (2.8%)** |
-| cost per document | $0.0069 | $0.0082 |
+| cost per document | $0.0074 | $0.0088 |
 
 Accuracy doesn't move between the columns — the verifier flags, it never
 corrects — but gate quality does: what slips past one read gets caught by
@@ -114,6 +114,38 @@ vendor/customer confusion on the German scans (the vendor is "the party
 that ISSUED the invoice — letterhead, logo, bank details", not the
 prominent customer block) and quantity markers glued onto line-item
 descriptions ("'10 Stk.' belongs in quantity").
+
+### Model tiers, measured (build step 7)
+
+Same 43 documents, same engine — only the provider argument changes:
+
+| configuration | fully correct | gate error | reviews (false alarms) | $/doc |
+|---|---|---|---|---|
+| `claude-haiku-4-5` | 35/37 | 5.4% | 0 | $0.0074 |
+| `claude-haiku-4-5` + verification | 35/37 | **2.8%** | 1 (0) | $0.0088 |
+| `claude-haiku-4-5`, `gpt-4o-mini` as verifier | 35/37 | 3.2% | 6 (5) | $0.0080 |
+| `gpt-4o-mini` | 24/37 | 27.3% | 4 (0) | $0.0011 |
+| `gpt-4o-mini` + verification | 24/37 | 8.7% | 14 (3) | $0.0017 |
+
+Two findings the table buys:
+
+- **The cheap tier is a false economy here.** `gpt-4o-mini` is ~7× cheaper
+  per call and gets 24/37 documents fully right; even with verification its
+  gate error is 3× worse *while* sending 14 of 37 invoices to a human. The
+  clerk's time is the expensive resource this system exists to save — the
+  extra $0.007/doc for the stronger reader is the cheapest line item on
+  this page.
+- **A second opinion is only worth having from a reader at least as good.**
+  Using `gpt-4o-mini` to verify `claude-haiku-4-5` (the `--verify-provider`
+  row) was a *worse* witness than the same model re-reading blind: five
+  false alarms and it missed the one-letter vendor misread the same-model
+  verifier catches.
+
+Swapping providers also surfaced two vendor quirks, both absorbed at the
+validation boundary without touching the engine: `gpt-4o-mini` reports the
+*string* `"null"` for a not-applicable confidence even in strict-schema
+mode, and copies quantity columns verbatim (`"4 Stk."`) — which the same
+locale-aware parsing that handles `1.234,56` now swallows too.
 
 What remains, honestly:
 
