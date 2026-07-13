@@ -1,49 +1,46 @@
-# %% cell 1: setup — imports (run this cell first)
-# Chapter 1 — Input adapters: a PDF is not text, and a photographed receipt
-# is not a PDF. Two very different inputs normalize into ONE Document shape,
-# and the rest of the pipeline never thinks about sources again.
-#
-# The implementation is extractor/adapters.py — keep it open alongside;
-# this lesson just runs it. (Lessons sit at the repo root next to extractor/,
-# so imports work as a script and in the interactive window, no path setup.)
+"""
+Chapter 1 — Ingestion: every document becomes the same thing.
+
+A digital PDF, a scanned PDF, and a phone photo are three different files.
+One loader turns them all into a single Document shape, so the rest of the
+system never cares where a file came from.
+"""
+
+# %% 1. Setup
+# ------------------------------------------------------------------
+# The implementation lives in extractor/adapters.py — this lesson runs it.
 
 from extractor import DocumentLoader
 from extractor.utils import INVOICES, sample_photo
 
-# %% cell 2: run the adapter — three sources in, one table out
-# Three real inputs, three very different files on disk:
-#   1. a digital-native vendor PDF        (has a text layer)
-#   2. a scanned copy of an invoice       (PDF, but zero extractable text)
-#   3. a photographed restaurant receipt  (not a PDF at all)
-
 loader = DocumentLoader()
 
-docs = [loader.load(INVOICES / "t01-es-clean-01.pdf"),
-        loader.load(INVOICES / "t09-scanned-01.pdf"),
-        loader.load(sample_photo())]
+# %% 2. Three very different files in, one shape out
+# ------------------------------------------------------------------
+# A digital invoice (real text inside), a scan (pixels only), and a photo.
 
-print(f"{'source':<28}{'kind':<8}{'pages':>6}{'text chars':>12}")
-print("-" * 54)
-for doc in docs:
-    chars = len(doc.text) if doc.text else 0
-    print(f"{doc.source:<28}{doc.kind:<8}{doc.pages:>6}{chars:>12,}")
+digital = loader.load(INVOICES / "t01-es-clean-01.pdf")
+scanned = loader.load(INVOICES / "t09-scanned-01.pdf")
+photo = loader.load(sample_photo())
 
-# %% cell 3: peek inside each Document (needs cell 2's `docs`)
-# Same shape, three sources. Two kinds only:
-#   "text"  — the PDF carried real characters; we read them directly
-#   "image" — scan or photo; we carry downscaled page images instead
+for doc in [digital, scanned, photo]:
+    print(f"{doc.source}  →  kind={doc.kind}, pages={doc.pages}")
 
-digital, scanned, photographed = docs
+# %% 3. What is inside each one
+# ------------------------------------------------------------------
+# "text" documents carry the actual characters. "image" documents carry
+# pictures of the pages. That is the ONLY difference downstream code sees.
 
-print("digital PDF → first lines of its text layer:")
-print("   " + "\n   ".join(digital.text.splitlines()[:4]))
+print("The digital PDF's text starts with:")
+print(digital.text[:120])
 
-print(f"\nscanned PDF → no text layer; carrying {scanned.pages} page image "
-      f"({scanned.page_images[0].width}×{scanned.page_images[0].height} px)")
+print("\nThe scan has no text — it carries a page image instead:")
+print(f"{scanned.page_images[0].width} × {scanned.page_images[0].height} pixels")
 
-print(f"photo       → {photographed.pages} image "
-      f"({photographed.page_images[0].width}×{photographed.page_images[0].height} px)")
+print("\nSo does the photo:")
+print(f"{photo.page_images[0].width} × {photo.page_images[0].height} pixels")
 
-# %% cell 4: wrap-up (narration only, nothing to run)
-# From here on, the pipeline sees `Document` — never a file format.
-# Downstream code only ever asks one question: text or images?
+# %% 4. Why this matters
+# ------------------------------------------------------------------
+# From here on, the pipeline sees Document — never a file format.
+# Every later chapter only ever asks one question: text or images?

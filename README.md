@@ -51,6 +51,8 @@ result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
 - [`extractor/validate.py`](extractor/validate.py) — rule runner + locale-aware
   `Money` (accepts `1.234,56`)
 - [`extractor/gate.py`](extractor/gate.py) — rules + confidence → decision
+- [`extractor/output.py`](extractor/output.py) — `ReviewQueue`: flagged
+  documents land in a JSONL file with reasons attached
 - [`profiles/iberia_invoice.py`](profiles/iberia_invoice.py) — the worked
   example: schema + 6 business rules + gate policy (SPEC §4)
 

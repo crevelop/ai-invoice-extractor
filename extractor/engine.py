@@ -28,6 +28,7 @@ class FieldMeta:
 
 @dataclass
 class ExtractionResult[T: BaseModel]:
+    source: str  # which file this came from
     data: T | None  # typed instance of the profile schema; None on REJECT
     document_type: str  # what the model says the page actually is
     field_meta: dict[str, FieldMeta]
@@ -35,6 +36,11 @@ class ExtractionResult[T: BaseModel]:
     cost: Cost
     decision: Decision
     reasons: list[str]  # why the gate decided what it decided
+
+    @property
+    def confidence(self) -> dict[str, Confidence]:
+        """Per-field confidence as a plain dict — what the gate consumes."""
+        return {name: meta.confidence for name, meta in self.field_meta.items()}
 
 
 _INSTRUCTIONS = """\
@@ -124,6 +130,7 @@ def extract[T: BaseModel](
         has_data=data is not None,
     )
     return ExtractionResult(
+        source=doc.source,
         data=data,
         document_type=envelope.document_type,
         field_meta=field_meta,

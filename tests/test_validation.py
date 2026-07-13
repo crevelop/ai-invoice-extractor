@@ -1,6 +1,7 @@
 """Validation & gate tests — the deterministic half of the pipeline.
 No API calls: rules and the gate are plain code, so they get plain tests."""
 
+import json
 import sys
 from datetime import date
 from decimal import Decimal
@@ -11,7 +12,15 @@ import pytest
 # extractor/ and profiles/ live at the repo root, one level up from tests/
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from extractor import Decision, decide, normalize_amount, run_rules  # noqa: E402
+from extractor import (  # noqa: E402
+    Cost,
+    Decision,
+    ExtractionResult,
+    ReviewQueue,
+    decide,
+    normalize_amount,
+    run_rules,
+)
 from profiles.iberia_invoice import (  # noqa: E402
     IBERIA_INVOICE,
     IberiaInvoice,
@@ -136,10 +145,17 @@ def test_garbage_tax_id_fails():
 
 
 def test_duplicate_rule_flags_second_sighting():
-    rule = duplicate_rule(set())
+    rule = duplicate_rule()  # remembers what it has seen
     inv = valid_invoice()
     assert rule.check(inv) is None
     assert "already processed" in rule.check(inv)
+
+
+def test_with_rule_adds_without_touching_the_original():
+    bigger = IBERIA_INVOICE.with_rule(duplicate_rule())
+    assert len(bigger.rules) == len(IBERIA_INVOICE.rules) + 1
+    assert bigger.rules[-1].name == "not-a-duplicate"
+    assert all(r.name != "not-a-duplicate" for r in IBERIA_INVOICE.rules)
 
 
 # ── the gate
@@ -188,3 +204,37 @@ def test_gate_rejects_wrong_document_type():
 def test_gate_rejects_when_no_data_extracted():
     decision, _ = decide(IBERIA_INVOICE, "invoice", {}, [], has_data=False)
     assert decision is Decision.REJECT
+
+
+# ── the review queue
+
+
+def flagged_result() -> ExtractionResult:
+    return ExtractionResult(
+        source="doc.pdf",
+        data=valid_invoice(),
+        document_type="invoice",
+        field_meta={},
+        validation=[],
+        cost=Cost(input_tokens=1, output_tokens=1, usd=0.0),
+        decision=Decision.NEEDS_REVIEW,
+        reasons=["rule failed: subtotal-plus-tax-is-total"],
+    )
+
+
+def test_review_queue_writes_one_json_line_per_entry(tmp_path):
+    queue = ReviewQueue(tmp_path / "queue.jsonl")
+    queue.add(flagged_result())
+    assert len(queue) == 1
+    entry = json.loads((tmp_path / "queue.jsonl").read_text())
+    assert entry["source"] == "doc.pdf"
+    assert entry["decision"] == "NEEDS_REVIEW"
+    assert entry["data"]["total"] == "149.37"
+
+
+def test_review_queue_starts_fresh_each_run(tmp_path):
+    path = tmp_path / "queue.jsonl"
+    path.write_text("leftover from a previous take\n")
+    queue = ReviewQueue(path)
+    assert len(queue) == 0
+    assert not path.exists()

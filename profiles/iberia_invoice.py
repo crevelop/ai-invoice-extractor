@@ -114,10 +114,12 @@ RULES = (
 )
 
 
-def duplicate_rule(seen: set[tuple[str, str]]) -> Rule:
+def duplicate_rule(seen: set[tuple[str, str]] | None = None) -> Rule:
     """(vendor_tax_id, invoice_number) must not repeat — the classic
-    double-payment bug. Stateful by design: every check registers the
-    invoice in `seen`, so build one rule per batch/run."""
+    double-payment bug. The rule remembers every invoice it checks,
+    so build one per batch/run."""
+    if seen is None:
+        seen = set()
 
     def check(inv: IberiaInvoice) -> str | None:
         key = (inv.vendor_tax_id, inv.invoice_number)

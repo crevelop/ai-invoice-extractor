@@ -1,8 +1,15 @@
-# %% cell 1: setup — .env key, provider (run this cell first)
-# Chapter 3 — Structured outputs: the SAME call as chapter 2, plus a typed
-# schema. The contrast is the lesson: prose out → typed object out.
+"""
+Chapter 3 — Structured output: same call, but with a contract.
 
-import json
+Instead of asking nicely for a format, we hand the API a schema it must
+fill in. Prose out becomes a typed object out — the contrast with
+chapter 2 is the whole lesson.
+"""
+
+# %% 1. Setup
+# ------------------------------------------------------------------
+# Same provider, same document, same instruction as chapter 2.
+
 from datetime import date, timedelta
 from decimal import Decimal
 
@@ -12,17 +19,17 @@ from extractor import AnthropicProvider, load
 from extractor.utils import INVOICES, require_api_key
 
 require_api_key()
-llm = AnthropicProvider()  # same model, same document, same instruction
+llm = AnthropicProvider()
 
 INSTRUCTIONS = ("Extract the vendor name, invoice number, issue date, "
                 "currency and total from this invoice.")
 
-# %% cell 2: the contract — a Pydantic model + the JSON Schema it compiles to
-# This schema is the whole concept of the chapter, so it lives right here.
+# %% 2. The contract — this schema IS the chapter
+# ------------------------------------------------------------------
 # One Pydantic model does three jobs at once:
-#   1. it compiles to a JSON Schema the API *enforces* on the response
-#   2. field descriptions double as extraction instructions
-#   3. it parses/validates the reply — Decimal for money, date for dates
+#   1. it becomes a JSON Schema the API *enforces* on the response
+#   2. the field descriptions double as extraction instructions
+#   3. it validates the reply — real dates, exact decimal money
 
 
 class InvoiceSummary(BaseModel):
@@ -34,38 +41,37 @@ class InvoiceSummary(BaseModel):
                                        "point and no thousands separators.")
 
 
-print(json.dumps(InvoiceSummary.model_json_schema(), indent=2)[:520], "…")
+# %% 3. The same call as chapter 2 — plus the schema   (1 API call)
+# ------------------------------------------------------------------
+# Prose can no longer come back. The reply IS an InvoiceSummary.
 
-# %% cell 3: the same call, schema-enforced — first typed result (~$0.002)
-# extract_structured() is generate_text() with the schema riding along.
-# Nothing else changes — and prose can no longer come back.
+invoice = load(INVOICES / "t01-es-clean-01.pdf")
+summary, cost = llm.extract_structured(invoice, InvoiceSummary, INSTRUCTIONS)
 
-inv, cost = llm.extract_structured(load(INVOICES / "t01-es-clean-01.pdf"),
-                                   InvoiceSummary, INSTRUCTIONS)
-print(inv)
-print(f"\n[{llm.model} · {cost}]")
+print(summary)
+print("\ncost:", cost)
 
-# %% cell 4: typed payoff — Decimal math + date arithmetic (needs cell 3's `inv`)
-# Not a string — a typed object. The things chapter 2 couldn't do:
+# %% 4. Not text — a typed object   (no API call)
+# ------------------------------------------------------------------
+# Everything chapter 2 couldn't do:
 
-print(f"inv.total       = {inv.total}  ({type(inv.total).__name__})")
-print(f"inv.issue_date  = {inv.issue_date}  ({type(inv.issue_date).__name__})")
-print(f"due in 30 days  = {inv.issue_date + timedelta(days=30)}  (real date arithmetic)")
-print(f"total × 2       = {inv.total * 2}  (exact Decimal math, no float drift)")
+print("total is a", type(summary.total).__name__, "→", summary.total)
+print("date is a", type(summary.issue_date).__name__, "→", summary.issue_date)
+print("due in 30 days:", summary.issue_date + timedelta(days=30))
+print("total × 2:", summary.total * 2)
 
-# %% cell 5: the chapter-2 pain, replayed — two vendors, one shape (2 API calls)
-# And the chapter-2 pain, replayed: the same two invoices, different vendors,
-# different languages, different number formats — one shape out.
+# %% 5. The chapter-2 pain, replayed   (2 API calls)
+# ------------------------------------------------------------------
+# The same two invoices — different vendors, languages, number formats.
+# One shape out, every time:
 
-print(f"{'vendor':<32}{'invoice #':<16}{'date':<12}{'total':>12}")
-print("-" * 72)
 for pdf in ["t01-es-clean-01.pdf", "t04-de-reverse-01.pdf"]:
-    row, _ = llm.extract_structured(load(INVOICES / pdf),
-                                    InvoiceSummary, INSTRUCTIONS)
-    print(f"{row.vendor_name:<32}{row.invoice_number:<16}"
-          f"{row.issue_date.isoformat():<12}{f'{row.total} {row.currency}':>12}")
+    row, cost = llm.extract_structured(load(INVOICES / pdf),
+                                       InvoiceSummary, INSTRUCTIONS)
+    print(row.vendor_name, "|", row.invoice_number, "|",
+          row.issue_date, "|", row.total, row.currency)
 
-# %% cell 6: wrap-up (narration only, nothing to run)
-# No regex. No format guessing. `row.total` — every time, any vendor.
-# But is it CORRECT? The model can still misread a digit. Code can check
-# that — deterministically. → chapter 4: validation & gating.
+# %% 6. But is it CORRECT?
+# ------------------------------------------------------------------
+# No regex, no format guessing — but the model can still misread a digit.
+# Code can check that, deterministically. → chapter 4

@@ -159,6 +159,7 @@ ai-invoice-extractor/
     validate.py        # rule runner, locale normalization
     verify.py          # optional prompt-chaining verification
     gate.py
+    output.py          # ReviewQueue — flagged docs land in a JSONL file
     utils.py           # demo plumbing: fixture paths, key check, pretty-printers
   profiles/
     iberia_invoice.py

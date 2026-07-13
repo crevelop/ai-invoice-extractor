@@ -1,10 +1,14 @@
-# %% cell 1: setup — .env key, provider (run this cell first)
-# Chapter 2 — AI inference: content + instructions in, plain text out.
-# The answer looks perfect — right up until you try to use it in code.
-#
-# The chapter-1 adapter feeds the model whatever the Document carries —
-# the text layer here, page images for scans. AnthropicProvider wraps the
-# selected model (extractor/providers/); swapping LLMs is this one line.
+"""
+Chapter 2 — AI inference: ask the model to read the invoice.
+
+Content + instructions in, plain text out. The answer looks perfect —
+right up until you try to use it in code.
+"""
+
+# %% 1. Setup
+# ------------------------------------------------------------------
+# One provider object wraps the selected model (extractor/providers/).
+# Swapping models — or vendors — later means changing this one line.
 
 import re
 
@@ -12,44 +16,49 @@ from extractor import AnthropicProvider, load
 from extractor.utils import INVOICES, require_api_key
 
 require_api_key()
-llm = AnthropicProvider()  # the one line that picks the model
+llm = AnthropicProvider()
 
 INSTRUCTIONS = ("Extract the vendor name, invoice number, issue date "
                 "and total amount from this invoice.")
 
-# %% cell 2: API call #1 — Spanish invoice (~$0.002)
-# Invoice #1 — a Spanish vendor. Watch how good this looks:
+# %% 2. Read a Spanish invoice   (1 API call, ~$0.001)
+# ------------------------------------------------------------------
+# Watch how good this looks:
 
-answer_1, cost_1 = llm.generate_text(load(INVOICES / "t01-es-clean-01.pdf"),
-                                     INSTRUCTIONS)
+invoice_1 = load(INVOICES / "t01-es-clean-01.pdf")
+answer_1, cost_1 = llm.generate_text(invoice_1, INSTRUCTIONS)
+
 print(answer_1)
-print(f"\n[{llm.model} · {cost_1}]")
+print("\ncost:", cost_1)
 
-# %% cell 3: API call #2 — German invoice, same instruction
-# Impressive. Now the exact same instruction on a different vendor — a German
-# invoice this time:
+# %% 3. Same instruction, German invoice   (1 API call)
+# ------------------------------------------------------------------
 
-answer_2, cost_2 = llm.generate_text(load(INVOICES / "t04-de-reverse-01.pdf"),
-                                     INSTRUCTIONS)
+invoice_2 = load(INVOICES / "t04-de-reverse-01.pdf")
+answer_2, cost_2 = llm.generate_text(invoice_2, INSTRUCTIONS)
+
 print(answer_2)
-print(f"\n[{llm.model} · {cost_2}]")
+print("\ncost:", cost_2)
 
-# %% cell 4: the pain — try to parse both answers with code (needs cells 2+3)
-# Two perfect answers... in two different shapes. Different labels, different
-# ordering, different number formats. Now try to USE them — pull the total
-# out with code:
+# %% 4. Now try to USE those answers in code   (no API call)
+# ------------------------------------------------------------------
+# Two perfect answers — in two different shapes. Pull the total out of
+# each one and turn it into a number:
 
 for name, answer in [("invoice 1", answer_1), ("invoice 2", answer_2)]:
-    match = re.search(r"[Tt]otal[^\d]*([\d.,]+)", answer)
-    raw = match.group(1) if match else "NO MATCH"
+    found = re.search(r"[Tt]otal[^\d]*([\d.,]+)", answer)
+    if not found:
+        print(f"{name}: could not even find a total")
+        continue
+    total_text = found.group(1)
     try:
-        value = float(raw)
-        verdict = f"float() gives {value}"
+        total = float(total_text)
+        print(f"{name}: float('{total_text}') gives {total}")
     except ValueError:
-        verdict = f"float() ValueError — {raw!r} is European-formatted!"
-    print(f"{name}: regex found {raw!r:<14} → {verdict}")
+        print(f"{name}: float('{total_text}') CRASHES — European number format")
 
-# %% cell 5: wrap-up (narration only, nothing to run)
-# The information is all there. The FORMAT is the problem — prose was written
-# for humans. Every prompt tweak ("reply in JSON please!") is a patch on the
-# wrong layer. What we want is a contract, not a request. → chapter 3.
+# %% 5. The lesson
+# ------------------------------------------------------------------
+# The information is all there. The FORMAT is the problem — prose was
+# written for humans. Asking nicely ("reply in JSON please!") is a patch
+# on the wrong layer. We want a contract, not a request. → chapter 3

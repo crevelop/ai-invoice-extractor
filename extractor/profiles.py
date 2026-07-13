@@ -6,7 +6,7 @@ and when to trust it (gate policy).
 """
 
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Literal
 
 from pydantic import BaseModel
@@ -44,3 +44,8 @@ class DocumentProfile[T: BaseModel]:
     rules: tuple[Rule, ...] = ()
     examples: tuple = ()  # few-shot examples for hard layouts (later chapter)
     gate: GatePolicy = field(default_factory=GatePolicy)
+
+    def with_rule(self, rule: Rule) -> "DocumentProfile[T]":
+        """A new profile with one more rule. Profiles are immutable —
+        adding a rule gives you a copy, the original stays untouched."""
+        return replace(self, rules=(*self.rules, rule))

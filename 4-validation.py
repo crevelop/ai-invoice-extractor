@@ -1,112 +1,110 @@
-# %% cell 1: setup — .env key, the Iberia profile (run this cell first)
-# Chapter 4 — Validation & gating: the AI read the document; code now checks
-# it and decides. AUTO_ACCEPT / NEEDS_REVIEW / REJECT.
+"""
+Chapter 4 — Validation & gating: the AI reads, code decides.
 
-import json
-from dataclasses import replace
-from pathlib import Path
+Deterministic rules check the math the model can't be trusted with, and a
+gate sorts every document into one of three buckets: AUTO_ACCEPT (no human
+needed), NEEDS_REVIEW (a person checks), REJECT (not an invoice at all).
+"""
 
-from extractor import Decision, decide, extract, run_rules
-from extractor.utils import (
-    FIXTURES, INVOICES, REJECTS, ROOT, require_api_key, show,
-)
+# %% 1. Setup
+# ------------------------------------------------------------------
+
+from extractor import Decision, ReviewQueue, decide, extract, run_rules
+from extractor.utils import INVOICES, REJECTS, require_api_key, show
 from profiles.iberia_invoice import IBERIA_INVOICE, duplicate_rule
 
 require_api_key()
-
-# %% cell 2: the profile — schema + rules + gate, printed (no API call)
-# Everything specific to Iberia Home Goods lives in ONE object
-# (profiles/iberia_invoice.py). The schema says what to extract; the rules
-# are deterministic math the model can't sweet-talk its way past; the gate
-# policy says when a human looks.
-
 profile = IBERIA_INVOICE
-print(f"document type   {profile.document_type}")
-print(f"schema          {profile.schema.__name__} "
-      f"({len(profile.schema.model_fields)} fields)")
-print(f"critical fields {', '.join(profile.gate.critical_fields)}")
+
+# %% 2. The profile: everything specific to ONE company
+# ------------------------------------------------------------------
+# Schema (what to extract), rules (checks the model can't sweet-talk its
+# way past), gate policy (when a human looks). The engine knows none of it —
+# it all lives in profiles/iberia_invoice.py.
+
+print("document type  :", profile.document_type)
+print("schema         :", profile.schema.__name__)
+print("critical fields:", ", ".join(profile.gate.critical_fields))
 print("rules:")
 for rule in profile.rules:
-    print(f"  · {rule.name}")
+    print("  ·", rule.name)
 
-# %% cell 3: the happy path — one clean invoice, end to end (~$0.003)
-# One call runs the whole pipeline: adapter → AI extraction → Pydantic parse
-# → rules → gate. Every rule passes, every field is confident: no human
-# needs to see this document.
+# %% 3. The happy path   (1 API call, ~$0.006)
+# ------------------------------------------------------------------
+# One call runs the whole pipeline: load → AI reads → rules check the
+# math → gate decides. Everything passes: no human sees this document.
 
-ok = extract(INVOICES / "t01-es-clean-01.pdf", profile)
-show(ok)
+good = extract(INVOICES / "t01-es-clean-01.pdf", profile)
+show(good)
 
-# %% cell 4: DEMO TAMPER — flip one digit, watch the rules catch it (no API call)
-# The classic failure: the model misreads ONE digit in the total. We simulate
-# it deterministically — take the good extraction and corrupt it in code —
-# so this take works every time. Validation is plain Python: re-running it
-# costs nothing and calls no API.
+# %% 4. Flip one digit — watch the rules catch it   (no API call)
+# ------------------------------------------------------------------
+# The classic failure: the model misreads ONE digit in the total. We fake
+# it on purpose (so this demo works on every take) by corrupting the good
+# extraction, then re-running the checks. Validation is plain code — free.
 
-bad = ok.data.model_copy(update={"total": ok.data.total + 600})  # 1110.76 → 1710.76
-print(f"tampered total: {ok.data.total} → {bad.total}\n")
+tampered = good.data.model_copy(update={"total": good.data.total + 600})
+print("total:", good.data.total, "→", tampered.total, "\n")
 
-checks = run_rules(bad, profile.rules)
-confidences = {name: meta.confidence for name, meta in ok.field_meta.items()}
-decision, reasons = decide(profile, "invoice", confidences, checks)
+checks = run_rules(tampered, profile.rules)
+decision, reasons = decide(profile, "invoice", good.confidence, checks)
 
-print(f"decision: {decision}")
+print("decision:", decision)
 for reason in reasons:
-    print(f"  ! {reason}")
-# The arithmetic doesn't care how confident the model felt. A wrong digit
-# breaks the math → NEEDS_REVIEW, with the exact discrepancy for the clerk.
+    print("  !", reason)
 
-# %% cell 5: REJECT — feed it a quote, not an invoice (~$0.003)
-# r2-quote-01.pdf is a price quote. It has amounts, a vendor, line items —
-# a naive extractor would happily "extract" it and someone would pay a
-# document that isn't a bill. The document-type check refuses it instead.
+# The math doesn't care how confident the model felt. A wrong digit breaks
+# the arithmetic → NEEDS_REVIEW, with the exact discrepancy for the clerk.
+
+# %% 5. Feed it something that is NOT an invoice   (1 API call)
+# ------------------------------------------------------------------
+# A price quote has amounts, a vendor, line items... a naive extractor
+# would happily "extract" it — and someone would pay a document that was
+# never a bill. The document-type check refuses it instead.
 
 quote = extract(REJECTS / "r2-quote-01.pdf", profile)
 show(quote)
 
-# %% cell 6: the gate at work — a mini batch + the review queue (6 calls, ~$0.02)
-# A morning's mail: clean invoices, a reverse-charge invoice, one with no due
-# date, a scrawled-over one, a bank statement, and a duplicate (same PDF
-# twice — the double-payment classic). One stateful rule joins the profile
-# for the batch: rules are data, adding one is a one-liner.
+# %% 6. A morning's mail   (6 API calls, ~$0.03)
+# ------------------------------------------------------------------
+# Six documents: clean invoices, one with no due date, a scrawled-over
+# one, a bank statement — and the same invoice twice (the double-payment
+# classic). One extra rule joins the profile for the batch.
 
-batch_profile = replace(profile, rules=(*profile.rules, duplicate_rule(set())))
+profile = IBERIA_INVOICE.with_rule(duplicate_rule())
 
 mail = [
-    "docs/invoices/t01-es-clean-02.pdf",
-    "docs/invoices/t04-de-reverse-01.pdf",
-    "docs/invoices/t06-en-minimal-01.pdf",
-    "docs/invoices/t10-es-handwritten-01.pdf",
-    "docs/reject/r1-statement-01.pdf",
-    "docs/invoices/t01-es-clean-02.pdf",  # the duplicate
+    INVOICES / "t01-es-clean-02.pdf",
+    INVOICES / "t04-de-reverse-01.pdf",
+    INVOICES / "t06-en-minimal-01.pdf",
+    INVOICES / "t10-es-handwritten-01.pdf",
+    REJECTS / "r1-statement-01.pdf",
+    INVOICES / "t01-es-clean-02.pdf",  # the duplicate
 ]
 
-queue_path = ROOT / "review_queue.jsonl"
-queue_path.unlink(missing_ok=True)
+results = []
+for pdf in mail:
+    result = extract(pdf, profile)
+    results.append(result)
+    print(pdf.name, "→", result.decision)
 
-print(f"{'document':<28}{'decision':<15}{'why'}")
-print("-" * 76)
-with queue_path.open("a") as queue:
-    for name in mail:
-        result = extract(FIXTURES / name, batch_profile)
-        why = result.reasons[0] if result.reasons else ""
-        print(f"{Path(name).name:<28}{result.decision:<15}{why[:44]}")
-        if result.decision is not Decision.AUTO_ACCEPT:
-            queue.write(json.dumps({
-                "source": Path(name).name,
-                "decision": result.decision,
-                "reasons": result.reasons,
-                "data": result.data.model_dump(mode="json") if result.data else None,
-            }) + "\n")
+# %% 7. The review queue — what the clerk actually opens
+# ------------------------------------------------------------------
+# Everything the gate didn't auto-accept lands in one file, with the
+# reasons attached. The clerk reviews a handful, not the whole mailbox.
 
-flagged = len(queue_path.read_text().splitlines())
-print(f"\nreview queue: {queue_path.name} — {flagged} of {len(mail)} documents")
+queue = ReviewQueue("review_queue.jsonl")
+for result in results:
+    if result.decision != Decision.AUTO_ACCEPT:
+        queue.add(result)
 
-# %% cell 7: wrap-up (narration only, nothing to run)
-# The clerk stopped retyping 800 invoices; they review the handful the gate
-# flags — each with the reason attached. That's human-in-the-loop as a
-# design choice, not an afterthought.
-#
-# One honest weakness remains: confidence is SELF-reported — the model
-# grading its own homework. For the fields that move money, we can buy a
-# second, independent opinion. → chapter 5: prompt chaining.
+print(f"the clerk reviews {len(queue)} of {len(mail)} documents:")
+for entry in queue:
+    print("  ·", entry["source"], "—", entry["reasons"][0])
+
+# %% 8. What we built
+# ------------------------------------------------------------------
+# Human-in-the-loop as a design choice: nothing doubtful gets posted, and
+# every flagged document says WHY. One honest weakness remains — the
+# confidence scores are the model grading its own homework. For fields
+# that move money, we can buy a second, independent opinion. → chapter 5
