@@ -7,14 +7,13 @@ AI call (two, if you buy the verification pass), measured with evals. See
 ```mermaid
 flowchart TD
     IN["PDF · scan · photo"] --> AD["adapters<br/><i>one Document shape</i>"]
-    AD --> EX(["<b>extract</b><br/>the ONE AI call"])
-    EX --> PV["Pydantic parse<br/><i>types enforced</i>"]
-    PV --> RU["business rules<br/><i>the math must add up</i>"]
-    RU --> GA{"gate"}
-    EX -.-> VF(["<b>verify</b><br/>optional 2nd AI read"])
+    AD --> EX(["<b>AI extraction</b>"])
+    EX --> CV["Code verification<br/><i>deterministic</i>"]
+    CV --> GA{"gate"}
+    EX -.-> VF(["<b>AI verification</b>"])
     VF -.-> GA
     GA -->|AUTO_ACCEPT| OK["typed JSON → ERP"]
-    GA -->|NEEDS_REVIEW| RQ["review queue<br/><i>reasons attached</i>"]
+    GA -->|NEEDS_REVIEW| RQ["Human-in-the-loop<br/><i>reasons attached</i>"]
     GA -->|REJECT| NO["not this document type"]
 
     style EX fill:#7c3aed,color:#fff
