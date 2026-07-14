@@ -152,6 +152,7 @@ ai-invoice-extractor/
   6-schema-swap.py     # concept: schema as contract — swap the profile, same pipeline, new document type
   7-evals.py           # concept: evals — unit tests for AI with an answer key; ~10 docs live, full matrix in evals/
   extractor/           # the reusable engine (every chapter imports from here)
+    __main__.py        # the standalone CLI: python -m extractor any-invoice.pdf
     engine.py          # extract(document, profile) — the generic core
     profiles.py        # DocumentProfile, Rule, GatePolicy
     providers/         # LLMProvider interface; anthropic.py + openai.py
