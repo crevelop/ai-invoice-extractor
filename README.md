@@ -5,7 +5,7 @@ AI call (two, if you buy the verification pass), measured with evals. See
 [SPEC.md](SPEC.md) for the full design.
 
 ```mermaid
-flowchart LR
+flowchart TD
     IN["PDF · scan · photo"] --> AD["adapters<br/><i>one Document shape</i>"]
     AD --> EX(["<b>extract</b><br/>the ONE AI call"])
     EX --> PV["Pydantic parse<br/><i>types enforced</i>"]
