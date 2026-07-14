@@ -5,9 +5,9 @@ How do you know the extractor is good — and STAYS good when you change a
 prompt? Run it against documents whose correct answers you already know,
 and count. Running this whole lesson costs about $0.05.
 
-(Chapter 6 doesn't exist yet — evals get built early on purpose, so every
-later change can be measured. Chapter 5's verification pass already paid
-that off: its with/without ablation table lives in the README.)
+(Evals were built early on purpose — build order ≠ chapter order — so
+chapters 5 and 6 could be measured as they landed. The gate-error history
+table in the README is that payoff: 8.1% → 2.8%, one number per change.)
 """
 
 # %% 1. Setup

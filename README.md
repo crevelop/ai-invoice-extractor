@@ -4,9 +4,33 @@ Schema-driven invoice extraction: a deterministic pipeline with exactly one
 AI call (two, if you buy the verification pass), measured with evals. See
 [SPEC.md](SPEC.md) for the full design.
 
-**Status:** build step 8 of 9 — the schema-swap demo: one profile file
-swaps the pipeline from invoices to delivery notes. Next: final polish
-and the video.
+```mermaid
+flowchart LR
+    IN["PDF · scan · photo"] --> AD["adapters<br/><i>one Document shape</i>"]
+    AD --> EX(["<b>extract</b><br/>the ONE AI call"])
+    EX --> PV["Pydantic parse<br/><i>types enforced</i>"]
+    PV --> RU["business rules<br/><i>the math must add up</i>"]
+    RU --> GA{"gate"}
+    EX -.-> VF(["<b>verify</b><br/>optional 2nd AI read"])
+    VF -.-> GA
+    GA -->|AUTO_ACCEPT| OK["typed JSON → ERP"]
+    GA -->|NEEDS_REVIEW| RQ["review queue<br/><i>reasons attached</i>"]
+    GA -->|REJECT| NO["not this document type"]
+
+    style EX fill:#7c3aed,color:#fff
+    style VF fill:#a78bfa,color:#fff
+```
+
+Only the two purple seats are AI — judgment on unstructured input, and a
+second opinion on the fields that move money. Everything else is code:
+deterministic, testable, free. For the worked example (Iberia Home Goods,
+~800 supplier invoices/month) the measured rates below extrapolate to
+roughly **$7/month in API calls, ~97% of invoices posted untouched, and a
+clerk reviewing ~25 flagged documents instead of retyping 800** — each
+flagged one arriving with the reasons and both machine readings attached.
+
+**Status:** build step 9 of 9 — the numbers are in the tables below;
+next stop is the recording booth.
 
 ## Requirements
 
@@ -296,3 +320,17 @@ generated) for the chapter-1 adapter demo. All generated docs are internally
 consistent by design — seeded extraction errors are simulated in code in
 chapter 4, never baked into documents (see `fixtures/gen/__init__.py`).
 
+
+## Deliberately out of scope
+
+PO matching, approval routing, GL coding, ERP integration, OCR-model
+training, email ingestion, and any UI. Those are the systems *around* this
+one, and naming them is the point: a real AP pipeline is mostly integration
+work, and none of it needs AI. This repo builds the one piece that does.
+
+The restraint is the lesson. This workflow is fixed, known in advance, and
+linear — so it's a *system* with one AI call in it, not an agent. You reach
+for an agent when the next step genuinely depends on what the previous one
+found: a vendor dispute to investigate, a mismatched PO to chase across
+systems, an exception with no playbook. Reading a document isn't that.
+That's the next video.
