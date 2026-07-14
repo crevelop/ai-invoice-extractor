@@ -20,7 +20,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from gen import FIXTURE_SEED  # noqa: E402
 from gen.corpus import build_corpus  # noqa: E402
-from gen.render import page_count  # noqa: E402
+from gen.render import html_to_pdf, page_count  # noqa: E402
+from gen.templates import x1_delivery_note  # noqa: E402
 
 
 def generate(out_dir: Path, seed: int = FIXTURE_SEED) -> dict:
@@ -28,7 +29,7 @@ def generate(out_dir: Path, seed: int = FIXTURE_SEED) -> dict:
     rng = random.Random(seed)
     docs = build_corpus(rng)
 
-    for sub in ("docs/invoices", "docs/reject", "truth"):
+    for sub in ("docs/invoices", "docs/reject", "docs/other", "truth"):
         (out_dir / sub).mkdir(parents=True, exist_ok=True)
 
     entries = []
@@ -45,6 +46,22 @@ def generate(out_dir: Path, seed: int = FIXTURE_SEED) -> dict:
             "truth": truth_rel,
         })
 
+    # Extras: documents OUTSIDE the eval corpus — no truth sidecar, own RNG
+    # stream (seed + 1) so the invoice corpus above stays byte-identical.
+    # x1 is the chapter-6 schema-swap demo: an albarán, quantities but no
+    # prices — a document the invoice profile must refuse.
+    extras_rng = random.Random(seed + 1)
+    note_pdf = html_to_pdf(x1_delivery_note.build(x1_delivery_note.make(extras_rng)))
+    note_rel = "docs/other/x1-delivery-note-01.pdf"
+    (out_dir / note_rel).write_bytes(note_pdf)
+    extras = [{
+        "file": note_rel,
+        "template": x1_delivery_note.TEMPLATE_ID,
+        "tags": x1_delivery_note.TAGS,
+        "pages": page_count(note_pdf),
+        "truth": None,
+    }]
+
     manifest = {
         "seed": seed,
         "generated_by": "fixtures/generate.py",
@@ -56,6 +73,7 @@ def generate(out_dir: Path, seed: int = FIXTURE_SEED) -> dict:
         },
         "by_template": dict(sorted(Counter(d.template for d in docs).items())),
         "docs": entries,
+        "extras": extras,
     }
     (out_dir / "MANIFEST.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest

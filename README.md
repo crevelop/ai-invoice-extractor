@@ -4,9 +4,9 @@ Schema-driven invoice extraction: a deterministic pipeline with exactly one
 AI call (two, if you buy the verification pass), measured with evals. See
 [SPEC.md](SPEC.md) for the full design.
 
-**Status:** build step 7 of 9 — second provider: `OpenAIProvider` behind
-the same interface, and the model-tier comparison is measured (tables
-below). The schema-swap demo lands next.
+**Status:** build step 8 of 9 — the schema-swap demo: one profile file
+swaps the pipeline from invoices to delivery notes. Next: final polish
+and the video.
 
 ## Requirements
 
@@ -72,10 +72,10 @@ $0.25** — every cell that spends says so in its title.
 5. [`5-prompt-chaining.py`](5-prompt-chaining.py) — a second, blind AI
    read of the fields that move money; code compares the two readings,
    a mismatch forces review
-
-Chapter [`7-evals.py`](7-evals.py) is also runnable already — evals get
-built early (build order ≠ chapter order) so every later change can be
-measured. Chapter 6 lands next.
+6. [`6-schema-swap.py`](6-schema-swap.py) — swap one profile file and the
+   same pipeline reads delivery notes; the system was never about invoices
+7. [`7-evals.py`](7-evals.py) — unit tests for AI, with an answer key:
+   extract, grade, aggregate — the tables below come from the full runner
 
 ## The engine
 
@@ -115,6 +115,9 @@ result.decision    # AUTO_ACCEPT | NEEDS_REVIEW | REJECT
   any document in, summary or JSON out, decision as exit code
 - [`profiles/iberia_invoice.py`](profiles/iberia_invoice.py) — the worked
   example: schema + 6 business rules + gate policy (SPEC §4)
+- [`profiles/delivery_note.py`](profiles/delivery_note.py) — the swap:
+  one page of schema + rules turns the same engine into a delivery-note
+  reader (chapter 6)
 
 Rules and gate are plain code, so they get plain tests:
 `uv run pytest tests/test_validation.py` (no API key needed).
@@ -286,6 +289,8 @@ uv run pytest                        # smoke tests: counts, arithmetic, determin
 | t10 handwritten annotations | scrawls + distractor amount over printed values |
 | r1/r2 statement & quote | must be REJECTed, not extracted |
 
+`fixtures/docs/other/` holds one generated delivery note — outside the
+eval corpus (no truth sidecar) — for the chapter-6 schema swap.
 `fixtures/photo/` holds a real photographed receipt (user-provided, not
 generated) for the chapter-1 adapter demo. All generated docs are internally
 consistent by design — seeded extraction errors are simulated in code in

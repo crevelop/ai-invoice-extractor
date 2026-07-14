@@ -529,5 +529,18 @@
       "pages": 1,
       "truth": "truth/r2-quote-02.json"
     }
+  ],
+  "extras": [
+    {
+      "file": "docs/other/x1-delivery-note-01.pdf",
+      "template": "x1_delivery_note",
+      "tags": [
+        "es",
+        "delivery_note",
+        "schema_swap"
+      ],
+      "pages": 1,
+      "truth": null
+    }
   ]
 }

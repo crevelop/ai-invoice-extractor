@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent  # the repo root
 FIXTURES = ROOT / "fixtures"
 INVOICES = FIXTURES / "docs" / "invoices"
 REJECTS = FIXTURES / "docs" / "reject"
+OTHER = FIXTURES / "docs" / "other"  # non-invoice docs (the schema swap)
 
 
 def require_api_key() -> None:
@@ -68,9 +69,10 @@ def show(result) -> None:
     if result.data is None:
         print(f"  (no data extracted — document read as '{result.document_type}')")
         return
-    print(f"  {'field':<16}{'value':<34}{'confidence'}")
+    width = max(len(name) for name in result.field_meta) + 2
+    print(f"  {'field':<{width}}{'value':<34}{'confidence'}")
     for name, meta in result.field_meta.items():
         value = getattr(result.data, name)
         text = f"{len(value)} items" if name == "line_items" else str(value)
         flags = f"   ⚑ {', '.join(meta.flags)}" if meta.flags else ""
-        print(f"  {name:<16}{text[:32]:<34}{meta.confidence}{flags}")
+        print(f"  {name:<{width}}{text[:32]:<34}{meta.confidence}{flags}")
