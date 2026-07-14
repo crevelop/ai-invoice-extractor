@@ -23,8 +23,9 @@ much narrower brief.
 
 import re
 from dataclasses import replace
+from typing import Annotated
 
-from pydantic import BaseModel, Field, ValidationError, create_model
+from pydantic import BaseModel, Field, TypeAdapter, ValidationError, create_model
 
 from .adapters import Document
 from .engine import ExtractionResult, FieldMeta
@@ -92,12 +93,15 @@ def _same_value(data: BaseModel, name: str, reading: str) -> bool:
     Models are bad at string equality — '5.323,18' and '5323.18' are the
     same amount — so Money's locale-aware parsing settles the format
     question the same way it did at extraction time."""
+    info = type(data).model_fields[name]
+    # Re-attach Annotated metadata (Money's locale-aware parser lives there).
+    field_type = (Annotated[info.annotation, *info.metadata]
+                  if info.metadata else info.annotation)
     try:
-        patched = type(data).model_validate(
-            {**data.model_dump(), name: reading})
+        got = TypeAdapter(field_type).validate_python(reading)
     except ValidationError:
         return False
-    got, want = getattr(patched, name), getattr(data, name)
+    want = getattr(data, name)
     if isinstance(want, str):
         # Text fields (names, ids) compare like values, not bytes: casing,
         # punctuation and spacing are typography, not disagreement.
@@ -106,6 +110,8 @@ def _same_value(data: BaseModel, name: str, reading: str) -> bool:
 
 
 def _normalize(text: str) -> str:
+    # Same idea as evals/harness.py normalize_name — keep the two in sync,
+    # or the verifier and the eval would disagree about what "same" means.
     return re.sub(r"[^a-z0-9]", "", text.lower())
 
 

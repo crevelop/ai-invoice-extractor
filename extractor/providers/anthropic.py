@@ -34,10 +34,11 @@ class AnthropicProvider(LLMProvider):
     def client(self) -> anthropic.Anthropic:
         if self._client is None:  # lazy: importing the package needs no key
             load_dotenv()
-            assert os.environ.get("ANTHROPIC_API_KEY"), (
-                "Missing ANTHROPIC_API_KEY — copy .env.example to .env "
-                "and add your key."
-            )
+            if not os.environ.get("ANTHROPIC_API_KEY"):
+                raise RuntimeError(
+                    "Missing ANTHROPIC_API_KEY — copy .env.example to .env "
+                    "and add your key."
+                )
             self._client = anthropic.Anthropic()
         return self._client
 

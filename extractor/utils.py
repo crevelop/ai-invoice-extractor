@@ -18,9 +18,10 @@ OTHER = FIXTURES / "docs" / "other"  # non-invoice docs (the schema swap)
 
 def require_api_key() -> None:
     load_dotenv(ROOT / ".env")
-    assert os.environ.get("ANTHROPIC_API_KEY"), (
-        "Missing ANTHROPIC_API_KEY — copy .env.example to .env and add your key."
-    )
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        raise RuntimeError(
+            "Missing ANTHROPIC_API_KEY — copy .env.example to .env and add your key."
+        )
 
 
 def answer_key(pdf: Path) -> dict:

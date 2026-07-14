@@ -8,9 +8,12 @@ errors); line items match when every row matches.
 
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
+from pydantic import Field, create_model
+
+from extractor import DocumentProfile
 from profiles.iberia_invoice import IberiaInvoice
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -72,9 +75,24 @@ def sample(gold: list[GoldDoc]) -> list[GoldDoc]:
     return picked
 
 
+def with_description(profile: DocumentProfile, field: str,
+                     text: str) -> DocumentProfile:
+    """A copy of the profile with ONE field description swapped — the eval
+    loop's experiment knob. Field descriptions are prompt engineering
+    (chapter 3), so changing one is a measurable system change."""
+    schema = create_model(
+        f"{profile.schema.__name__}",
+        __base__=profile.schema,
+        **{field: (profile.schema.model_fields[field].annotation,
+                   Field(description=text))},
+    )
+    return replace(profile, schema=schema)
+
+
 def normalize_name(name: str) -> str:
     """Casing and punctuation are not extraction errors:
-    'Cocinas del Ebro, S.L.' == 'COCINAS DEL EBRO SL'."""
+    'Cocinas del Ebro, S.L.' == 'COCINAS DEL EBRO SL'.
+    Mirrors extractor/verify.py _normalize — keep the two in sync."""
     return re.sub(r"[^a-z0-9]", "", name.lower())
 
 

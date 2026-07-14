@@ -20,13 +20,16 @@ IMAGE_DOC = Document(source="b.pdf", kind="image",
                      page_images=[Image.new("RGB", (8, 8), "white")])
 
 
-@pytest.mark.parametrize("provider_cls", [AnthropicProvider, OpenAIProvider])
-def test_text_document_travels_as_text(provider_cls):
+@pytest.mark.parametrize(
+    "provider_cls, text_type",
+    [(AnthropicProvider, "text"), (OpenAIProvider, "input_text")],
+)
+def test_text_document_travels_as_text(provider_cls, text_type):
     messages = provider_cls()._messages(TEXT_DOC, "extract it")
     parts = messages[0]["content"]
-    assert parts[0]["type"] == "text"
+    assert parts[0]["type"] == text_type
     assert "Rechnung Nr. 7" in parts[0]["text"]
-    assert parts[-1] == {"type": "text", "text": "extract it"}
+    assert parts[-1] == {"type": text_type, "text": "extract it"}
 
 
 def test_image_document_travels_as_anthropic_image_blocks():
@@ -36,15 +39,16 @@ def test_image_document_travels_as_anthropic_image_blocks():
 
 
 def test_image_document_travels_as_openai_data_urls():
+    # Responses API: input_image with the data URL as a plain string.
     parts = OpenAIProvider()._messages(IMAGE_DOC, "extract it")[0]["content"]
-    assert parts[0]["type"] == "image_url"
-    assert parts[0]["image_url"]["url"].startswith("data:image/png;base64,")
+    assert parts[0]["type"] == "input_image"
+    assert parts[0]["image_url"].startswith("data:image/png;base64,")
 
 
-def test_openai_cost_uses_its_own_pricing_and_usage_names():
-    class Usage:  # OpenAI reports prompt/completion, not input/output
-        prompt_tokens = 1_000_000
-        completion_tokens = 1_000_000
+def test_openai_cost_uses_its_own_pricing():
+    class Usage:  # Responses API reports input/output tokens
+        input_tokens = 1_000_000
+        output_tokens = 1_000_000
 
     cost = OpenAIProvider()._cost(Usage())
     price_in, price_out = OpenAIProvider.PRICING[OpenAIProvider.DEFAULT_MODEL]

@@ -42,7 +42,6 @@ class DocumentProfile[T: BaseModel]:
     schema: type[T]
     document_type: str = "invoice"  # anything else on the page -> REJECT
     rules: tuple[Rule, ...] = ()
-    examples: tuple = ()  # few-shot examples for hard layouts (later chapter)
     gate: GatePolicy = field(default_factory=GatePolicy)
 
     def with_rule(self, rule: Rule) -> "DocumentProfile[T]":

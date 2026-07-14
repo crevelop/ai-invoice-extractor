@@ -27,6 +27,8 @@ deterministic, testable, free. For the worked example (Iberia Home Goods,
 roughly **$7/month in API calls, ~97% of invoices posted untouched, and a
 clerk reviewing ~25 flagged documents instead of retyping 800** — each
 flagged one arriving with the reasons and both machine readings attached.
+(And nobody is waiting on an invoice: batch endpoints — both vendors have
+one — run the same calls at 50% off, so the real bill is ~$3.50/month.)
 
 **Status:** build step 9 of 9 — the numbers are in the tables below;
 next stop is the recording booth.
@@ -88,6 +90,7 @@ $0.25** — every cell that spends says so in its title.
    and photo normalize into one `Document` shape
 2. [`2-ai-inference.py`](2-ai-inference.py) — call the API: content
    + instructions in, plain text out — great until you try to parse it
+   (and "reply in JSON please" is a request, not a contract)
 3. [`3-structured-output.py`](3-structured-output.py) — the same
    call with a typed schema; prose → typed object
 4. [`4-validation.py`](4-validation.py) — deterministic rules +
@@ -98,7 +101,8 @@ $0.25** — every cell that spends says so in its title.
 6. [`6-schema-swap.py`](6-schema-swap.py) — swap one profile file and the
    same pipeline reads delivery notes; the system was never about invoices
 7. [`7-evals.py`](7-evals.py) — unit tests for AI, with an answer key:
-   extract, grade, aggregate — the tables below come from the full runner
+   extract, grade, aggregate — then change one prompt, rerun, and watch
+   the number move; the tables below come from the full runner
 
 ## The engine
 

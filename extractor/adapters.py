@@ -25,10 +25,11 @@ class Document:
     kind: str  # "text" | "image"
     text: str | None = None
     page_images: list[Image.Image] = field(default_factory=list)
+    page_count: int = 1  # real page count — text documents carry no images
 
     @property
     def pages(self) -> int:
-        return max(1, len(self.page_images))
+        return max(self.page_count, len(self.page_images))
 
     def png_pages(self) -> list[bytes]:
         """Each page image as PNG bytes — the form vision APIs consume."""
@@ -59,10 +60,12 @@ class DocumentLoader:
 
     def _from_pdf(self, path: Path) -> Document:
         pdf = pdfium.PdfDocument(path)
+        pages = len(pdf)
         text = "\n".join(p.get_textpage().get_text_bounded() for p in pdf)
         if len(text.strip()) > 100:  # a real text layer, not OCR junk
             pdf.close()
-            return Document(source=path.name, kind="text", text=text)
+            return Document(source=path.name, kind="text", text=text,
+                            page_count=pages)
 
         # No text layer (a scan): rasterize each page instead.
         images = [self._shrink(page.render(scale=2).to_pil()) for page in pdf]

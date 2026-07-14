@@ -47,7 +47,7 @@ tampered = good.data.model_copy(update={"total": good.data.total + 600})
 print("total:", good.data.total, "→", tampered.total, "\n")
 
 checks = run_rules(tampered, profile.rules)
-decision, reasons = decide(profile, "invoice", good.confidence, checks)
+decision, reasons = decide(profile, good.document_type, good.confidence, checks)
 
 print("decision:", decision)
 for reason in reasons:

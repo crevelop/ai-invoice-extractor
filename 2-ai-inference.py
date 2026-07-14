@@ -10,6 +10,7 @@ right up until you try to use it in code.
 # One provider object wraps the selected model (extractor/providers/).
 # Swapping models — or vendors — later means changing this one line.
 
+import json
 import re
 
 from extractor import AnthropicProvider, load
@@ -57,8 +58,28 @@ for name, answer in [("invoice 1", answer_1), ("invoice 2", answer_2)]:
     except ValueError:
         print(f"{name}: float('{total_text}') CRASHES — European number format")
 
-# %% 5. The lesson
+# %% 5. The obvious patch: "reply in JSON please!"   (2 API calls)
 # ------------------------------------------------------------------
-# The information is all there. The FORMAT is the problem — prose was
-# written for humans. Asking nicely ("reply in JSON please!") is a patch
-# on the wrong layer. We want a contract, not a request. → chapter 3
+# Everyone's first fix. Same two invoices, one sentence added — watch
+# what we actually get back:
+
+for name, pdf in [("invoice 1", "t01-es-clean-01.pdf"),
+                  ("invoice 2", "t04-de-reverse-01.pdf")]:
+    answer, _ = llm.generate_text(load(INVOICES / pdf),
+                                  INSTRUCTIONS + " Reply with JSON only.")
+    try:
+        data = json.loads(answer)
+    except json.JSONDecodeError:
+        print(f"{name}: not even valid JSON — starts with {answer[:30]!r}")
+        continue
+    total = next((v for k, v in data.items() if "total" in k.lower()), None)
+    print(f"{name}: parses! keys = {list(data)}")
+    print(f"   but total is a {type(total).__name__}: {total!r}")
+
+# %% 6. The lesson
+# ------------------------------------------------------------------
+# A polite request is not a contract. Maybe it parses, maybe it comes
+# fenced in ```json; the keys are whatever the model picked today; the
+# total is a string in whatever format the page printed. Nothing here
+# is ENFORCED — and a model update can quietly change all of it.
+# We don't want to ask for a shape. We want to guarantee one. → chapter 3

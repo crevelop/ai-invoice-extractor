@@ -31,7 +31,7 @@ show(extract(note, IBERIA_INVOICE))
 # profiles/delivery_note.py is one page: a 5-field schema, two rules, a
 # gate policy. That file is everything the pipeline knows about albaranes.
 
-from profiles.delivery_note import DELIVERY_NOTE
+from profiles.delivery_note import DELIVERY_NOTE  # noqa: E402 — the swap IS the demo
 
 show(extract(note, DELIVERY_NOTE))
 

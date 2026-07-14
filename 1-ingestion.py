@@ -1,5 +1,5 @@
 """
-Chapter 1 — Ingestion: every document becomes the same thing.
+Chapter 1 — Input adapters: every document becomes the same thing.
 
 A digital PDF, a scanned PDF, and a phone photo are three different files.
 One loader turns them all into a single Document shape, so the rest of the
@@ -40,7 +40,14 @@ print(f"{scanned.page_images[0].width} × {scanned.page_images[0].height} pixels
 print("\nSo does the photo:")
 print(f"{photo.page_images[0].width} × {photo.page_images[0].height} pixels")
 
-# %% 4. Why this matters
+# %% 4. Why this matters — and why not just send the PDF to the API?
 # ------------------------------------------------------------------
 # From here on, the pipeline sees Document — never a file format.
 # Every later chapter only ever asks one question: text or images?
+#
+# Both AI providers do accept PDFs directly — and bill every page TWICE:
+# once as extracted text, once as a page image (~1,500–3,000 tokens
+# each). The adapter sends only what carries information — characters
+# OR pixels — so digital PDFs cost roughly half, with no accuracy loss
+# (chapter 7 measures it). And a phone photo was never a PDF anyway:
+# here it's just one more Document.
