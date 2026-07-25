@@ -47,10 +47,10 @@ show(second)
 # %% 4. The happy path   (2 API calls, ~$0.01)
 # ------------------------------------------------------------------
 # On a clean invoice the two reads agree everywhere: still AUTO_ACCEPT,
-# roughly double the price. That's the trade.
+# roughly double the price. That's the trade — and it composes: verify
+# wraps extract, nothing upstream changes.
 
-clean = extract(INVOICES / "t01-es-clean-01.pdf", profile)
-clean = verify(clean, profile)
+clean = verify(extract(INVOICES / "t01-es-clean-01.pdf", profile), profile)
 show(clean)
 
 print(f"\nread once : {first.cost}")
@@ -59,7 +59,7 @@ print(f"read twice: {second.cost}")
 # %% 5. Does the second call pay for itself?
 # ------------------------------------------------------------------
 # Measured, not guessed: evals/run_evals.py --verify reruns all 43
-# documents — gate error drops 5.4% → 2.8% for a fifth of a cent per
-# document (table in the README).
+# documents — gate error drops 5.4% → 2.8% for under a fifth of a cent
+# per document (table in the README).
 #
 # Next: swap one profile file, extract a different document. → chapter 6

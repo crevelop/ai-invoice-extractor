@@ -60,12 +60,14 @@ print("date is a", type(summary.issue_date).__name__, "→", summary.issue_date)
 print("due in 30 days:", summary.issue_date + timedelta(days=30))
 print("total × 2:", summary.total * 2)
 
-# %% 5. The chapter-2 pain, replayed   (2 API calls)
+# %% 5. The chapter-2 pain, replayed   (3 API calls)
 # ------------------------------------------------------------------
-# The same two invoices — different vendors, languages, number formats.
-# One shape out, every time:
+# The two chapter-2 invoices plus a Chinese exporter billing in USD —
+# three languages, two decimal conventions, two currencies. One shape
+# out, every time:
 
-for pdf in ["t01-es-clean-01.pdf", "t04-de-reverse-01.pdf"]:
+for pdf in ["t01-es-clean-01.pdf", "t04-de-reverse-01.pdf",
+            "t05-cn-export-01.pdf"]:
     row, cost = llm.extract_structured(load(INVOICES / pdf),
                                        InvoiceSummary, INSTRUCTIONS)
     print(row.vendor_name, "|", row.invoice_number, "|",

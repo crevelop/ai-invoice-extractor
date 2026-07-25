@@ -41,10 +41,20 @@ answer_2, cost_2 = llm.generate_text(invoice_2, INSTRUCTIONS)
 show_answer(answer_2)
 print("\ncost:", cost_2)
 
-# %% 4. Now try to USE those answers in code   (no API call)
+# %% 4. Now BE the next line of code   (no API call)
 # ------------------------------------------------------------------
 # The rendering above was for OUR eyes. Code receives the raw characters —
 # headers, asterisks and all. Pull the total out and turn it into a number:
+
+found = re.search(r"[Tt]otal[^\d]*([\d.,]+)", answer_1)
+print("the regex found:", found.group(1))
+
+float(found.group(1))  # ValueError — a European-format number
+
+# %% 5. The same failure, systematically   (no API call)
+# ------------------------------------------------------------------
+# That traceback wasn't bad luck. Run both answers through the same two
+# lines of consumer code and log every way they fall over:
 
 for name, answer in [("invoice 1", answer_1), ("invoice 2", answer_2)]:
     found = re.search(r"[Tt]otal[^\d]*([\d.,]+)", answer)
@@ -58,7 +68,7 @@ for name, answer in [("invoice 1", answer_1), ("invoice 2", answer_2)]:
     except ValueError:
         print(f"{name}: float('{total_text}') CRASHES — European number format")
 
-# %% 5. The obvious patch: "reply in JSON please!"   (2 API calls)
+# %% 6. The obvious patch: "reply in JSON please!"   (2 API calls)
 # ------------------------------------------------------------------
 # Everyone's first fix. Same two invoices, one sentence added — watch
 # what we actually get back:
@@ -76,7 +86,7 @@ for name, pdf in [("invoice 1", "t01-es-clean-01.pdf"),
     print(f"{name}: parses! keys = {list(data)}")
     print(f"   but total is a {type(total).__name__}: {total!r}")
 
-# %% 6. The lesson
+# %% 7. The lesson
 # ------------------------------------------------------------------
 # A polite request is not a contract. Maybe it parses, maybe it comes
 # fenced in ```json; the keys are whatever the model picked today; the

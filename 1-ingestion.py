@@ -48,6 +48,6 @@ print(f"{photo.page_images[0].width} × {photo.page_images[0].height} pixels")
 # Both AI providers do accept PDFs directly — and bill every page TWICE:
 # once as extracted text, once as a page image (~1,500–3,000 tokens
 # each). The adapter sends only what carries information — characters
-# OR pixels — so digital PDFs cost roughly half, with no accuracy loss
-# (chapter 7 measures it). And a phone photo was never a PDF anyway:
-# here it's just one more Document.
+# OR pixels — so digital PDFs cost roughly half, by billing arithmetic
+# alone. And a phone photo was never a PDF anyway: here it's just one
+# more Document.
