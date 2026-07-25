@@ -17,3 +17,5 @@ review_queue.jsonl
 # Eval artifacts (results are committed to the README instead)
 evals/cache/
 evals/results*.json
+
+storyboard.md
