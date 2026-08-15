@@ -5,6 +5,7 @@ each lesson shows nothing but the concept it teaches.
 
 import json
 import os
+import re
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -37,6 +38,13 @@ def sample_photo() -> Path:
     photos = sorted(p for p in (FIXTURES / "photo").iterdir()
                     if p.suffix.lower() in (".jpg", ".jpeg", ".png"))
     return next((p for p in photos if "placeholder" not in p.name), photos[0])
+
+
+def strip_fence(text: str) -> str:
+    """Peel a ```json ... ``` markdown fence off a model answer. The patch
+    every codebase grows once 'reply with JSON' starts coming back fenced."""
+    match = re.fullmatch(r"\s*```(?:json)?\s*(.*?)\s*```\s*", text, re.DOTALL)
+    return match.group(1) if match else text
 
 
 def show_answer(text: str) -> None:

@@ -14,7 +14,7 @@ import json
 import re
 
 from extractor import AnthropicProvider, load
-from extractor.utils import INVOICES, require_api_key, show_answer
+from extractor.utils import INVOICES, require_api_key, show_answer, strip_fence
 
 require_api_key()
 llm = AnthropicProvider()
@@ -70,21 +70,33 @@ for name, answer in [("invoice 1", answer_1), ("invoice 2", answer_2)]:
 
 # %% 6. The obvious patch: "reply in JSON please!"   (2 API calls)
 # ------------------------------------------------------------------
-# Everyone's first fix. Same two invoices, one sentence added — watch
-# what we actually get back:
+# Everyone's first fix. Same two invoices, one sentence added. Patch past
+# the first failure and the deeper ones surface: every claim gets printed —
+# does it parse, whose keys are these, what type is the total.
 
 for name, pdf in [("invoice 1", "t01-es-clean-01.pdf"),
                   ("invoice 2", "t04-de-reverse-01.pdf")]:
     answer, _ = llm.generate_text(load(INVOICES / pdf),
                                   INSTRUCTIONS + " Reply with JSON only.")
+    print(f"\n{name}: the answer starts with {answer[:24]!r}")
+
+    payload = strip_fence(answer)
+    print(f"   markdown fence? {'yes — stripping it' if payload != answer else 'no'}")
+
     try:
-        data = json.loads(answer)
-    except json.JSONDecodeError:
-        print(f"{name}: not even valid JSON — starts with {answer[:30]!r}")
+        data = json.loads(payload)
+    except json.JSONDecodeError as exc:
+        print(f"   still not JSON: {exc}")
         continue
-    total = next((v for k, v in data.items() if "total" in k.lower()), None)
-    print(f"{name}: parses! keys = {list(data)}")
-    print(f"   but total is a {type(total).__name__}: {total!r}")
+    print(f"   parses! keys = {list(data)}")
+
+    key, total = next(((k, v) for k, v in data.items() if "total" in k.lower()),
+                      (None, None))
+    print(f"   the total sits in {key!r}, a {type(total).__name__}: {total!r}")
+    try:
+        print(f"   float({total!r}) gives {float(total)}")
+    except (TypeError, ValueError):
+        print(f"   float({total!r}) CRASHES — still just text")
 
 # %% 7. The lesson
 # ------------------------------------------------------------------
